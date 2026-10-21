@@ -704,11 +704,14 @@ html[data-lang="zh"] .display { word-break: keep-all; overflow-wrap: anywhere; }
 html[data-lang="zh"] .h-xl { font-size: clamp(38px, 9vw, 140px); }
 
 /* hero: a long, thin poster arrow pointing at the work */
-.hero-arrow { position: absolute; right: 0; bottom: 4%; width: clamp(44px, 5vw, 76px); color: var(--ink); }
-.hero-arrow svg { display: block; width: 100%; height: auto; overflow: visible; clip-path: inset(0 0 100% 0); animation: arrow-in 1.6s var(--ease) .9s forwards; transition: transform .6s var(--ease); }
-.hero-arrow:hover svg { transform: translateY(12px); }
+.hero-arrow { position: absolute; right: 0; top: 6%; bottom: 4%; width: clamp(44px, 5vw, 76px); color: var(--ink); }
+/* the shaft stretches to the name's height, so the arrow never reaches up into the header */
+.hero-arrow .ha-in { display: flex; flex-direction: column; align-items: center; height: 100%; clip-path: inset(0 0 100% 0); animation: arrow-in 1.6s var(--ease) .9s forwards; transition: transform .6s var(--ease); }
+.hero-arrow .ha-shaft { flex: 1; width: 1.5px; background: currentColor; }
+.hero-arrow svg { display: block; width: 100%; height: auto; overflow: visible; }
+.hero-arrow:hover .ha-in { transform: translateY(12px); }
 @keyframes arrow-in { to { clip-path: inset(0 0 -4% 0); } }
-@media (max-width: 640px) { .hero-arrow { width: 40px; bottom: 0; } }
+@media (max-width: 640px) { .hero-arrow { width: 32px; top: 0; bottom: -28px; } }
 
 /* =====================================================================
    Selected projects: four panels. The open panel shows the real object on
@@ -1235,3 +1238,21 @@ html[data-lang="zh"] .vz-q > span { font-weight: 700; }
   .art-grid { display: flex; flex-direction: column; }
   .art-grid .art-item:has(.plate.photo) { order: -1; }
 }
+
+/* ---------- v30 larger header (the hero status row is gone); hidden spam trap ---------- */
+.site-head .wrap { padding-block: 20px; }
+.brand { font-size: 22px; gap: 12px; }
+.brand .cjk { font-size: 17px; }
+.nav a { font-size: 17px; }
+.lang-btn { padding: 7px 14px; font-size: 14px; }
+@media (max-width: 640px) {
+  .site-head .wrap { padding-block: 14px; }
+  .brand { font-size: 20px; }
+}
+@media (max-width: 520px) {
+  .brand { font-size: 19px; }
+  .nav a { font-size: 15px; }
+  .lang-btn { padding: 6px 12px; font-size: 13px; }
+}
+@media (max-width: 360px) { .nav a { font-size: 14px; } .nav { gap: 10px; } }
+.msg-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }

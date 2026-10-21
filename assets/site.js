@@ -710,9 +710,10 @@
   }
 
   /* ---------- message board ----------
-     Inside the claude.ai viewer, messages are stored with the `db` capability:
-     each visitor writes only inbox/<their id>; only the owner can read the inbox.
-     Anywhere else (a downloaded copy, another host) the form points to email. */
+     Messages are emailed to me through FormSubmit (data-mail on the form). If that
+     fails and the page runs inside the claude.ai viewer, the message is stored with
+     the `db` capability instead: each visitor writes only inbox/<their id>, and
+     only the owner can read the inbox. Otherwise the form points to email. */
   var form = $("#msg-form");
   if (form) {
     var status = $(".msg-status", form), btn = $("button[type=submit]", form);
@@ -723,6 +724,19 @@
       [["en", en], ["zh", zh]].forEach(function (x) { var s = document.createElement("span"); s.className = x[0]; s.textContent = x[1]; status.appendChild(s); });
       status.classList.toggle("ok", !!ok);
     };
+    var mailTo = form.getAttribute("data-mail");
+    async function sendMail(data) {
+      if (!mailTo || !window.fetch) return "skip";
+      var ctl = window.AbortController ? new AbortController() : null;
+      var t = ctl ? setTimeout(function () { ctl.abort(); }, 15000) : null;
+      try {
+        var r = await fetch(mailTo, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data), signal: ctl ? ctl.signal : undefined });
+        var j = await r.json().catch(function () { return {}; });
+        if (r.ok && String(j.success) === "true") return "ok";
+        if (/activat/i.test(String(j.message || ""))) return "activate";
+        return "fail";
+      } catch (err) { return "error"; } finally { if (t) clearTimeout(t); }
+    }
     var store = { db: null, user: null, id: null, ready: false, readOnly: false };
     var fallbackMsg = ["Messages can't be saved in this copy of the site. Please email me instead (address on the right).", "这个版本的网站无法保存留言，请改用右侧的邮箱联系我。"];
 
@@ -767,10 +781,27 @@
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
+      var hp = form.elements["_honey"];
+      if (hp && hp.value) return;
       var name = form.name.value.trim(), contact = form.contact.value.trim(), text = form.text.value.trim();
       if (!name || !text) { say("Please add your name and a message.", "请填写名字和留言内容。"); return; }
-      if (!store.ready || !store.id || store.readOnly) { say(fallbackMsg[0], fallbackMsg[1]); return; }
       btn.disabled = true; say("Sending…", "发送中…");
+      var mail = { name: name.slice(0, 80), contact: contact.slice(0, 120) || "-", message: text.slice(0, 2000),
+        _subject: "作品集网站新留言 / New message from " + name.slice(0, 80), _template: "table", _captcha: "false" };
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) mail._replyto = contact;
+      var sent = await sendMail(mail);
+      if (sent === "ok") {
+        form.text.value = ""; btn.disabled = false;
+        say("Sent to my inbox. Thank you, I'll get back to you soon.", "已发送到我的邮箱，谢谢！我会尽快回复你。", true);
+        return;
+      }
+      if (!store.ready || !store.id || store.readOnly) {
+        btn.disabled = false;
+        if (sent === "activate") say("The message form is still being set up. Please email me directly for now.", "留言功能还在开通中，暂时请直接发邮件给我。");
+        else if (sent === "skip") say(fallbackMsg[0], fallbackMsg[1]);
+        else say("The message didn't send. Please try again, or email me directly.", "留言没有发送成功，请重试或直接发邮件给我。");
+        return;
+      }
       try {
         var ref = store.db.doc("inbox/" + store.id);
         var snap = await ref.get();
