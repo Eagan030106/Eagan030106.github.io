@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Digestion · Eagan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A wearable &quot;external information stomach&quot; that reads the colours of what you watch on your phone and shows, through light and video, how well your mind is digesting it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<script>(function(){var d=document.documentElement,l;d.classList.add("js");try{l=localStorage.getItem("lang")}catch(e){}if(l!=="zh"&&l!=="en")l=/^zh/i.test(navigator.language||"")?"zh":"en";d.setAttribute("data-lang",l);d.lang=l==="zh"?"zh-CN":"en"})()</script>
+</head>
+<body>
+<div class="curtain" aria-hidden="true"><span>Digestion</span></div>
+<div class="progress" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><div class="ring"><span>View</span></div><i class="xy"></i></div>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="index.html" data-label="Eagan">Eagan <span class="cjk">黄一罡（思衡）</span></a>
+    <div class="head-right">
+      <nav class="nav" aria-label="Main"><a href="work.html" aria-current="page" data-label="Projects"><span class="roll"><span class="en" data-text="Projects">Projects</span><span class="zh" data-text="作品">作品</span></span></a><a href="art.html" data-label="Art"><span class="roll"><span class="en" data-text="Art">Art</span><span class="zh" data-text="艺术创作">艺术创作</span></span></a><a href="experience.html" data-label="Experience"><span class="roll"><span class="en" data-text="Experience">Experience</span><span class="zh" data-text="经历">经历</span></span></a><a href="index.html#contact" data-label="Contact"><span class="roll"><span class="en" data-text="Contact">Contact</span><span class="zh" data-text="联系">联系</span></span></a></nav>
+      <button class="lang-btn" type="button" data-lang-toggle aria-label="Switch language / 切换语言"><span data-l="zh">中</span><i>/</i><span data-l="en">EN</span></button>
+    </div>
+  </div>
+</header>
+<main>
+<section class="p-hero" id="top"><div class="wrap">
+  <div class="crumbs mono" data-reveal="fade"><a class="back-link" href="work.html" data-back data-label="Back"><svg width="18" height="18" viewBox="0 0 28 28" aria-hidden="true"><path d="M23 14H5M12 7l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span class="en">Back</span><span class="zh" lang="zh-CN">返回</span></a><span class="sep"></span><a href="work.html" data-label="Projects"><span class="en">Projects</span><span class="zh" lang="zh-CN">作品</span></a><span>/</span><span><span class="en">Art design · Wearable</span><span class="zh" lang="zh-CN">艺术设计 · 可穿戴装置</span></span></div>
+  <h1 class="display h-xl hd" data-split><span class="hl"><span class="en">Digestion:<br>An External Organ for Information Detox</span><span class="zh" lang="zh-CN">Digestion：<br>信息排毒的体外器官</span></span></h1>
+  <p class="lede" data-reveal style="--d:300ms"><span class="en">A wearable &quot;external information stomach&quot; that reads the colours of what you watch on your phone and shows, through light and video, how well your mind is digesting it.</span><span class="zh" lang="zh-CN">一个可穿戴的「体外信息胃」：读取你在手机上看的内容的颜色，再用光和影像显示你的大脑消化得怎么样。</span></p>
+  <dl class="meta-grid" data-reveal style="--d:400ms">
+    <div><dt class="mono"><span class="en">Role</span><span class="zh" lang="zh-CN">角色</span></dt><dd><span class="en">Personal project</span><span class="zh" lang="zh-CN">个人项目</span></dd></div>
+    <div><dt class="mono"><span class="en">Timeline</span><span class="zh" lang="zh-CN">时间</span></dt><dd>11/2025 – 01/2026</dd></div>
+    <div><dt class="mono"><span class="en">Context</span><span class="zh" lang="zh-CN">背景</span></dt><dd><span class="en">Critical design, external organ device</span><span class="zh" lang="zh-CN">思辨设计 · 体外器官装置</span></dd></div>
+    <div><dt class="mono"><span class="en">Methods &amp; tools</span><span class="zh" lang="zh-CN">方法与工具</span></dt><dd>RGB colour sensor, Arduino, LED strips, PLA tube and film, resin, LED screens, video</dd></div>
+  </dl>
+</div></section>
+<section class="wrap cover"><div class="parallax-box" data-reveal="clip"><figure class="plate photo wide"><div class="plx" data-parallax="0.08"><img src="assets/img/digestion/hero.jpg" alt="Digestion" decoding="async"></div></figure></div></section>
+<section class="section"><div class="wrap"><div class="chapters"><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>01</b><span>/ 04</span><span class="en">Spark</span><span class="zh" lang="zh-CN">起点</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">Sixteen hours on a phone</span><span class="zh" lang="zh-CN">一天刷了 16 个小时手机</span></span></h2>
+  <div class="vz vz-stats-b" data-reveal style="--d:80ms"><ul class="vz-stats" style="--n:1"><li><b><span class="en">16 h</span><span class="zh" lang="zh-CN">16 小时</span></b><span><span class="en">of videos in one day, where the project started</span><span class="zh" lang="zh-CN">一天刷视频的时长，作品由此开始</span></span></li></ul></div><div class="vz vz-insight-b" data-reveal style="--d:170ms"><div class="vz-insight"><p class="mono vz-k"><span class="en">Diagnosis</span><span class="zh" lang="zh-CN">判断</span></p><p class="vz-insight-t"><span class="en">Not too little information but information obesity: algorithms serve mental fast food.</span><span class="zh" lang="zh-CN">问题不是信息太少，而是「信息肥胖」：推荐算法提供的是精神快餐。</span></p></div></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">It started with a day spent watching videos for 16 hours. It felt like my brain had been fed a pile of broken, unpalatable food.</span><span class="zh" lang="zh-CN">起点是某一天我刷了 16 个小时视频，感觉大脑像被喂了一堆破碎又难以下咽的食物。</span></li><li><span class="en">We no longer lack information; we suffer from &quot;information obesity&quot;, and recommendation algorithms serve mental fast food.</span><span class="zh" lang="zh-CN">我们不再缺少信息，而是陷入「信息肥胖」，推荐算法提供的是精神快餐。</span></li></ul></div></details>
+</article><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>02</b><span>/ 04</span><span class="en">Thinking</span><span class="zh" lang="zh-CN">设计思考</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">The mind digests like a stomach</span><span class="zh" lang="zh-CN">大脑像胃一样消化信息</span></span></h2>
+  <div class="vz vz-mapping-b" data-reveal style="--d:80ms"><div class="vz-mapping"><div><p class="mono vz-k"><span class="en">How the mind copes</span><span class="zh" lang="zh-CN">大脑的反应</span></p><ul><li><span class="en">Information overload</span><span class="zh" lang="zh-CN">信息过载</span></li><li><span class="en">Cognitive load</span><span class="zh" lang="zh-CN">认知负荷</span></li><li><span class="en">Heuristic thinking</span><span class="zh" lang="zh-CN">启发式思维</span></li><li><span class="en">Halo effect</span><span class="zh" lang="zh-CN">光环效应</span></li><li><span class="en">Behaviour</span><span class="zh" lang="zh-CN">行为输出</span></li></ul></div><div class="vz-mapping-go"><svg class="vz-arw" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h37M32 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke"/></svg></div><div><p class="mono vz-k"><span class="en">How a stomach copes</span><span class="zh" lang="zh-CN">胃的反应</span></p><ul><li><span class="en">Reflux</span><span class="zh" lang="zh-CN">反酸</span></li><li><span class="en">Bloating</span><span class="zh" lang="zh-CN">胀气</span></li><li><span class="en">Emergency mode</span><span class="zh" lang="zh-CN">应激</span></li><li><span class="en">Overeating</span><span class="zh" lang="zh-CN">暴食</span></li></ul></div></div></div><div class="vz vz-chips-b" data-reveal style="--d:170ms"><div class="vz-chips"><p class="mono vz-k"><span class="en">Against self-domestication</span><span class="zh" lang="zh-CN">反自我驯化</span></p><ul><li><span class="en">Friction</span><span class="zh" lang="zh-CN">摩擦</span></li><li><span class="en">Confusion</span><span class="zh" lang="zh-CN">困惑</span></li><li><span class="en">Metabolism</span><span class="zh" lang="zh-CN">代谢</span></li><li><span class="en">Forgetting</span><span class="zh" lang="zh-CN">遗忘</span></li></ul></div></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">Information overload, cognitive load, heuristic thinking, the halo effect and behaviour were mapped onto the stomach: reflux, bloating, emergency mode and overeating.</span><span class="zh" lang="zh-CN">把信息过载、认知负荷、启发式思维、光环效应和行为输出，一一对应到胃的反应：反酸、胀气、应激和暴食。</span></li><li><span class="en">The design takes a stand against &quot;self-domestication&quot; by algorithms, using friction, confusion, metabolism and forgetting.</span><span class="zh" lang="zh-CN">作品以「反自我驯化」为立场，用摩擦、困惑、代谢与遗忘对抗算法的全景凝视。</span></li></ul></div></details>
+</article><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>03</b><span>/ 04</span><span class="en">Translation</span><span class="zh" lang="zh-CN">信息转化</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">From screen time to stomach acid</span><span class="zh" lang="zh-CN">从屏幕时间到胃酸颜色</span></span></h2>
+  <div class="vz vz-swatches-b" data-reveal style="--d:80ms"><div class="vz-swatches"><p class="mono vz-k"><span class="en">Screen time, read by an RGB sensor</span><span class="zh" lang="zh-CN">RGB 传感器读取的屏幕时间</span></p>
+  <div class="vz-converge-row"><ul><li><i style="background:#88C797"></i><span class="en">Education</span><span class="zh" lang="zh-CN">学习</span></li><li><i style="background:#FF9F0A"></i><span class="en">Entertainment</span><span class="zh" lang="zh-CN">娱乐</span></li><li><i style="background:#308ED3"></i><span class="en">Social</span><span class="zh" lang="zh-CN">社交</span></li></ul><svg class="vz-arw" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h37M32 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke"/></svg><div class="vz-converge-to"><span class="en">pH colour scale</span><span class="zh" lang="zh-CN">pH 色卡</span></div></div></div></div><div class="vz vz-steps-b" data-reveal style="--d:170ms"><ol class="vz-steps" style="--n:4"><li><span class="vz-dot mono">01</span>
+  <b><span class="en">Ingest</span><span class="zh" lang="zh-CN">摄入</span></b><span><span class="en">colour sensor</span><span class="zh" lang="zh-CN">颜色传感器</span></span></li><li><span class="vz-dot mono">02</span>
+  <b><span class="en">Digest</span><span class="zh" lang="zh-CN">消化</span></b><span><span class="en">luminous gastric tube</span><span class="zh" lang="zh-CN">发光胃管</span></span></li><li><span class="vz-dot mono">03</span>
+  <b><span class="en">Absorb</span><span class="zh" lang="zh-CN">吸收</span></b><span><span class="en">external stomach</span><span class="zh" lang="zh-CN">体外信息胃</span></span></li><li class="is-key"><span class="vz-dot mono">04</span>
+  <b><span class="en">Excrete</span><span class="zh" lang="zh-CN">排泄</span></b><span><span class="en">video output</span><span class="zh" lang="zh-CN">影像输出</span></span></li></ol></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">Screen-time categories are read by an RGB sensor and mapped onto a pH colour scale: green for education, orange for entertainment, blue for social.</span><span class="zh" lang="zh-CN">RGB 传感器读取屏幕使用时间的分类颜色，再映射到 pH 色卡：绿色代表学习，橙色代表娱乐，蓝色代表社交。</span></li><li><span class="en">Four stages make up the device: ingest (colour sensor), digest (luminous gastric tube), absorb (the external stomach) and excrete (video output).</span><span class="zh" lang="zh-CN">装置由四个阶段组成：摄入（颜色传感器）、消化（发光胃管）、吸收（体外信息胃）和排泄（影像输出）。</span></li></ul></div></details>
+</article><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>04</b><span>/ 04</span><span class="en">Making</span><span class="zh" lang="zh-CN">制作与交互</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">Calm or restless</span><span class="zh" lang="zh-CN">平静或躁动</span></span></h2>
+  <div class="vz vz-states-b" data-reveal style="--d:80ms"><div class="vz-states"><div class="vz-state"><b><span class="en">Calm</span><span class="zh" lang="zh-CN">平静</span></b>
+  <p><span class="mono"><span class="en">When</span><span class="zh" lang="zh-CN">条件</span></span><span class="en">Green dominates</span><span class="zh" lang="zh-CN">绿色占多数</span></p><p><span class="mono"><span class="en">Then</span><span class="zh" lang="zh-CN">表现</span></span><span class="en">The stomach stays calm</span><span class="zh" lang="zh-CN">胃保持平静</span></p></div><div class="vz-state is-alert"><b><span class="en">Restless</span><span class="zh" lang="zh-CN">躁动</span></b>
+  <p><span class="mono"><span class="en">When</span><span class="zh" lang="zh-CN">条件</span></span><span class="en">Orange and blue pile up</span><span class="zh" lang="zh-CN">橙色和蓝色堆积</span></p><p><span class="mono"><span class="en">Then</span><span class="zh" lang="zh-CN">表现</span></span><span class="en">Light turns red, video turns turbulent</span><span class="zh" lang="zh-CN">灯光变红，影像躁动</span></p></div></div></div><div class="vz vz-chips-b" data-reveal style="--d:170ms"><div class="vz-chips"><p class="mono vz-k"><span class="en">Built with</span><span class="zh" lang="zh-CN">材料与技术</span></p><ul><li><span class="en">PLA tube &amp; film</span><span class="zh" lang="zh-CN">PLA 管与薄膜</span></li><li><span class="en">Resin</span><span class="zh" lang="zh-CN">树脂</span></li><li><span class="en">LED strips</span><span class="zh" lang="zh-CN">LED 灯带</span></li><li><span class="en">Screens</span><span class="zh" lang="zh-CN">屏幕</span></li><li>Arduino</li></ul></div></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">Built from PLA tube and film, resin, LED strips and screens, programmed with Arduino after material, shape and hemming tests.</span><span class="zh" lang="zh-CN">经过材料、造型和封边测试后，用 PLA 管与薄膜、树脂、LED 灯带和屏幕制作，并用 Arduino 编程。</span></li><li><span class="en">When green dominates the stomach stays calm. When orange and blue pile up, the light turns red and the video becomes turbulent, like a stomach in distress.</span><span class="zh" lang="zh-CN">绿色占多数时，胃保持平静；橙色和蓝色堆积时，灯光变红，影像变得躁动，就像一个不舒服的胃。</span></li></ul></div></details>
+</article></div></div></section>
+<section class="section boards-sec"><div class="wrap">
+  <div class="sec-head">
+    <h2 class="display h-l hd" data-split><span class="hl"><span class="en">Portfolio boards</span><span class="zh" lang="zh-CN">作品展板</span></span></h2>
+    <p class="mono muted" data-reveal><span class="en">6 boards · tap to enlarge</span><span class="zh" lang="zh-CN">共 6 张 · 点击放大</span></p>
+  </div>
+  <div class="boards"><a class="board" href="assets/img/digestion/01.jpg" data-lightbox="bd-1" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/digestion/01.jpg" alt="Cover" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>01</span><span class="en">Cover</span><span class="zh" lang="zh-CN">封面</span></span>
+</a><a class="board" href="assets/img/digestion/02.jpg" data-lightbox="bd-2" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/digestion/02.jpg" alt="Inspiration, information board and mind map" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>02</span><span class="en">Inspiration, information board and mind map</span><span class="zh" lang="zh-CN">灵感、信息情绪板与思维导图</span></span>
+</a><a class="board" href="assets/img/digestion/03.jpg" data-lightbox="bd-3" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/digestion/03.jpg" alt="Design thinking and touchpoints" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>03</span><span class="en">Design thinking and touchpoints</span><span class="zh" lang="zh-CN">设计思考与触点</span></span>
+</a><a class="board" href="assets/img/digestion/04.jpg" data-lightbox="bd-4" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/digestion/04.jpg" alt="Design conversion and sketch" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>04</span><span class="en">Design conversion and sketch</span><span class="zh" lang="zh-CN">设计转化与草图</span></span>
+</a><a class="board" href="assets/img/digestion/05.jpg" data-lightbox="bd-5" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/digestion/05.jpg" alt="Materials, programming and interaction" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>05</span><span class="en">Materials, programming and interaction</span><span class="zh" lang="zh-CN">材料、编程与交互</span></span>
+</a><a class="board" href="assets/img/digestion/06.jpg" data-lightbox="bd-6" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/digestion/06.jpg" alt="Wearing effect" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>06</span><span class="en">Wearing effect</span><span class="zh" lang="zh-CN">佩戴效果</span></span>
+</a></div>
+</div></section>
+<template id="bd-1"><figure class="lb-slide"><img src="assets/img/digestion/01.jpg" alt="Cover">
+<figcaption class="mono muted">01 / 06 · <span class="en">Cover</span><span class="zh" lang="zh-CN">封面</span></figcaption></figure></template><template id="bd-2"><figure class="lb-slide"><img src="assets/img/digestion/02.jpg" alt="Inspiration, information board and mind map">
+<figcaption class="mono muted">02 / 06 · <span class="en">Inspiration, information board and mind map</span><span class="zh" lang="zh-CN">灵感、信息情绪板与思维导图</span></figcaption></figure></template><template id="bd-3"><figure class="lb-slide"><img src="assets/img/digestion/03.jpg" alt="Design thinking and touchpoints">
+<figcaption class="mono muted">03 / 06 · <span class="en">Design thinking and touchpoints</span><span class="zh" lang="zh-CN">设计思考与触点</span></figcaption></figure></template><template id="bd-4"><figure class="lb-slide"><img src="assets/img/digestion/04.jpg" alt="Design conversion and sketch">
+<figcaption class="mono muted">04 / 06 · <span class="en">Design conversion and sketch</span><span class="zh" lang="zh-CN">设计转化与草图</span></figcaption></figure></template><template id="bd-5"><figure class="lb-slide"><img src="assets/img/digestion/05.jpg" alt="Materials, programming and interaction">
+<figcaption class="mono muted">05 / 06 · <span class="en">Materials, programming and interaction</span><span class="zh" lang="zh-CN">材料、编程与交互</span></figcaption></figure></template><template id="bd-6"><figure class="lb-slide"><img src="assets/img/digestion/06.jpg" alt="Wearing effect">
+<figcaption class="mono muted">06 / 06 · <span class="en">Wearing effect</span><span class="zh" lang="zh-CN">佩戴效果</span></figcaption></figure></template>
+<div class="lightbox" role="dialog" aria-modal="true" aria-label="Board" hidden>
+  <button class="lb-close mono" type="button" data-lb-close><span class="en">Close</span><span class="zh" lang="zh-CN">关闭</span> ✕</button>
+  <button class="lb-nav lb-prev" type="button" data-lb-step="-1"><svg width="18" height="18" viewBox="0 0 28 28" aria-hidden="true"><path d="M23 14H5M12 7l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span class="lb-nav-t mono"><span class="en">Previous</span><span class="zh" lang="zh-CN">上一张</span></span></button><button class="lb-nav lb-next" type="button" data-lb-step="1"><svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><path d="M5 14h18M16 7l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span class="lb-nav-t mono"><span class="en">Next</span><span class="zh" lang="zh-CN">下一张</span></span></button>
+  <div class="lb-body"></div>
+</div>
+<section class="section"><div class="wrap"><div class="highlight">
+  <p class="mono muted" data-reveal><span class="en">Outcome</span><span class="zh" lang="zh-CN">成果</span></p>
+  <p class="display h-l" data-split><span class="en">A stomach outside the body that makes information overload visible.</span><span class="zh" lang="zh-CN">一个长在体外的胃，让信息过载变得看得见。</span></p>
+</div></div></section>
+<a class="back-fab mono" href="work.html" data-back data-label="Back" aria-label="Back / 返回"><svg width="18" height="18" viewBox="0 0 28 28" aria-hidden="true"><path d="M23 14H5M12 7l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span><span class="en">Back</span><span class="zh" lang="zh-CN">返回</span></span></a>
+<a class="next" href="project-cockpit.html" data-label="Sound &amp; Light Cockpit" data-cursor="Next"><div class="wrap">
+  <p class="mono muted"><span class="en">Next project</span><span class="zh" lang="zh-CN">下一个作品</span> · 2026</p>
+  <p class="display h-xl hd hd-next"><span class="hl"><span class="en">Defining Sound Boundaries, Resonating with Light</span><span class="zh" lang="zh-CN">定义声音边界，与光共振</span></span></p>
+</div></a>
+<section class="field-host end-band" aria-label="Eagan">
+  <canvas class="field" data-lines="18" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="mono muted" data-reveal="fade"><span class="en">Thanks for visiting</span><span class="zh" lang="zh-CN">感谢浏览</span></p>
+    <div class="hero-name end-name"><p class="display h-xxl hd" data-split data-vf><span class="hl">Eagan</span></p></div>
+  </div>
+</section>
+</main>
+<footer class="wrap">
+  <div class="foot mono">
+    <span>© 2026 Eagan</span>
+    <span><span class="en">Service &amp; product design</span><span class="zh" lang="zh-CN">服务设计 · 产品设计</span></span>
+    <a href="#top" data-label="Top"><span class="en">Back to top ↑</span><span class="zh" lang="zh-CN">回到顶部 ↑</span></a>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

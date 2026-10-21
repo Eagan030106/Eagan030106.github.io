@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LARVAFIX · Eagan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A soft robot that repairs bent city pipes from the inside, modelled on how shipworms tunnel, together with the system and service around it, so streets don&#x27;t have to be dug up.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<script>(function(){var d=document.documentElement,l;d.classList.add("js");try{l=localStorage.getItem("lang")}catch(e){}if(l!=="zh"&&l!=="en")l=/^zh/i.test(navigator.language||"")?"zh":"en";d.setAttribute("data-lang",l);d.lang=l==="zh"?"zh-CN":"en"})()</script>
+</head>
+<body>
+<div class="curtain" aria-hidden="true"><span>LARVAFIX</span></div>
+<div class="progress" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><div class="ring"><span>View</span></div><i class="xy"></i></div>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="index.html" data-label="Eagan">Eagan <span class="cjk">黄一罡（思衡）</span></a>
+    <div class="head-right">
+      <nav class="nav" aria-label="Main"><a href="work.html" aria-current="page" data-label="Projects"><span class="roll"><span class="en" data-text="Projects">Projects</span><span class="zh" data-text="作品">作品</span></span></a><a href="art.html" data-label="Art"><span class="roll"><span class="en" data-text="Art">Art</span><span class="zh" data-text="艺术创作">艺术创作</span></span></a><a href="experience.html" data-label="Experience"><span class="roll"><span class="en" data-text="Experience">Experience</span><span class="zh" data-text="经历">经历</span></span></a><a href="index.html#contact" data-label="Contact"><span class="roll"><span class="en" data-text="Contact">Contact</span><span class="zh" data-text="联系">联系</span></span></a></nav>
+      <button class="lang-btn" type="button" data-lang-toggle aria-label="Switch language / 切换语言"><span data-l="zh">中</span><i>/</i><span data-l="en">EN</span></button>
+    </div>
+  </div>
+</header>
+<main>
+<section class="p-hero" id="top"><div class="wrap">
+  <div class="crumbs mono" data-reveal="fade"><a class="back-link" href="work.html" data-back data-label="Back"><svg width="18" height="18" viewBox="0 0 28 28" aria-hidden="true"><path d="M23 14H5M12 7l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span class="en">Back</span><span class="zh" lang="zh-CN">返回</span></a><span class="sep"></span><a href="work.html" data-label="Projects"><span class="en">Projects</span><span class="zh" lang="zh-CN">作品</span></a><span>/</span><span><span class="en">Urban maintenance · Soft robotics</span><span class="zh" lang="zh-CN">城市维护 · 软体机器人</span></span></div>
+  <h1 class="display h-xl hd" data-split><span class="hl"><span class="en">LARVAFIX:<br>Pipe Repair Without Digging</span><span class="zh" lang="zh-CN">LARVAFIX：<br>不开挖的管道修复</span></span></h1>
+  <p class="lede" data-reveal style="--d:300ms"><span class="en">A soft robot that repairs bent city pipes from the inside, modelled on how shipworms tunnel, together with the system and service around it, so streets don&#x27;t have to be dug up.</span><span class="zh" lang="zh-CN">一个从内部修复城市弯管的软体机器人，模仿船蛆钻洞的方式；同时设计了围绕它的系统与服务，让修管道不再需要开挖马路。</span></p>
+  <dl class="meta-grid" data-reveal style="--d:400ms">
+    <div><dt class="mono"><span class="en">Role</span><span class="zh" lang="zh-CN">角色</span></dt><dd><span class="en">Personal project</span><span class="zh" lang="zh-CN">个人项目</span></dd></div>
+    <div><dt class="mono"><span class="en">Timeline</span><span class="zh" lang="zh-CN">时间</span></dt><dd>04/2023 – 06/2023</dd></div>
+    <div><dt class="mono"><span class="en">Context</span><span class="zh" lang="zh-CN">背景</span></dt><dd><span class="en">Biomimetic shipworm soft robot</span><span class="zh" lang="zh-CN">仿生船蛆软体机器人</span></dd></div>
+    <div><dt class="mono"><span class="en">Methods &amp; tools</span><span class="zh" lang="zh-CN">方法与工具</span></dt><dd>Ethnography, system mapping, soft robotics, material testing, service blueprint, web UI</dd></div>
+  </dl>
+</div></section>
+<section class="wrap cover"><div class="parallax-box" data-reveal="clip"><figure class="plate photo wide"><div class="plx" data-parallax="0.08"><img src="assets/img/larvafix/hero.jpg" alt="LARVAFIX" decoding="async"></div></figure></div></section>
+<section class="section"><div class="wrap"><div class="chapters"><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>01</b><span>/ 05</span><span class="en">Problem</span><span class="zh" lang="zh-CN">问题</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">The hidden crisis under the city</span><span class="zh" lang="zh-CN">城市地下的隐性危机</span></span></h2>
+  <div class="vz vz-ranges-b" data-reveal style="--d:80ms"><div class="vz-ranges"><p class="mono vz-k"><span class="en">Design life</span><span class="zh" lang="zh-CN">设计寿命</span></p><div class="vz-range"><b><span class="en">Buildings &amp; roads</span><span class="zh" lang="zh-CN">地面建筑与道路</span></b>
+  <div class="vz-range-track"><i style="left:62.50%;width:25.00%" title="50–70"></i>
+  <span style="left:87.50%">50–70 <span class="en">years</span><span class="zh" lang="zh-CN">年</span></span></div></div><div class="vz-range is-key"><b><span class="en">Pipes beneath them</span><span class="zh" lang="zh-CN">地下管网</span></b>
+  <div class="vz-range-track"><i style="left:31.25%;width:6.25%" title="25–30"></i>
+  <span style="left:37.50%">25–30 <span class="en">years</span><span class="zh" lang="zh-CN">年</span></span></div></div>
+  <div class="vz-range vz-axis"><b></b><div class="vz-range-track mono"><span style="left:0.00%">0</span><span style="left:25.00%">20</span><span style="left:50.00%">40</span><span style="left:75.00%">60</span><span style="left:100.00%">80</span></div></div>
+  <p class="vz-note"><span class="en">Pipes wear out 20–45 years before the city above them. Neighbourhoods built in the 1990s–2000s are in their first wave of failures.</span><span class="zh" lang="zh-CN">管网比地面早 20–45 年到期，1990–2000 年代建成的社区正迎来第一轮老化。</span></p></div></div><div class="vz vz-stats-b" data-reveal style="--d:170ms"><ul class="vz-stats" style="--n:3"><li><b><span class="en">40–60%</span><span class="zh" lang="zh-CN">40–60%</span></b><span><span class="en">of leaks and failures happen at elbows</span><span class="zh" lang="zh-CN">的漏损与故障发生在弯头</span></span></li><li><b><span class="en">Bends</span><span class="zh" lang="zh-CN">弯管</span></b><span><span class="en">where existing repair robots struggle</span><span class="zh" lang="zh-CN">现有修复机器人的难点</span></span></li><li><b><span class="en">4</span><span class="zh" lang="zh-CN">4 国</span></b><span><span class="en">countries studied: US, China, Japan, UK</span><span class="zh" lang="zh-CN">案例研究：美、中、日、英</span></span></li></ul></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">Buildings and roads last 50 to 70 years, but the pipes beneath them are designed for 25 to 30. Many neighbourhoods built in the 1990s and 2000s now face their first wave of failures.</span><span class="zh" lang="zh-CN">地面建筑和道路寿命一般是 50 到 70 年，而地下管网的设计寿命往往只有 25 到 30 年。许多 1990 和 2000 年代建成的社区正迎来第一轮大规模老化。</span></li><li><span class="en">Ethnography and case studies across the US, China, Japan and the UK showed that elbows cause 40 to 60 percent of leaks and failures, and that existing repair robots struggle with bends.</span><span class="zh" lang="zh-CN">对美国、中国、日本和英国的民族志与案例研究发现：弯头占漏损和故障的 40% 至 60%，而现有修复机器人很难处理弯管。</span></li></ul></div></details>
+</article><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>02</b><span>/ 05</span><span class="en">Idea</span><span class="zh" lang="zh-CN">灵感</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">Learning from the shipworm</span><span class="zh" lang="zh-CN">向船蛆学习</span></span></h2>
+  <div class="vz vz-analogy-b" data-reveal style="--d:80ms"><div class="vz-analogy"><p class="vz-q"><span><span class="en">Can curved-pipe repair work the way a shipworm tunnels?</span><span class="zh" lang="zh-CN">弯管修复能否模仿船蛆钻洞的方式？</span></span></p>
+  <div class="vz-an-head"><b><span class="en">Shipworm</span><span class="zh" lang="zh-CN">船蛆</span></b><i></i><b><span class="en">LARVAFIX</span><span class="zh" lang="zh-CN">LARVAFIX</span></b></div><div class="vz-an-row"><span><span class="en">Tunnels through wood</span><span class="zh" lang="zh-CN">在木头中钻洞</span></span><svg class="vz-arw" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h37M32 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke"/></svg><span><span class="en">Travels inside the pipe</span><span class="zh" lang="zh-CN">在管道内部行进</span></span></div><div class="vz-an-row"><span><span class="en">Secretes mucus as it goes</span><span class="zh" lang="zh-CN">钻洞时分泌黏液</span></span><svg class="vz-arw" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h37M32 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke"/></svg><span><span class="en">Extrudes cement onto the wall</span><span class="zh" lang="zh-CN">把水泥挤到内壁</span></span></div></div></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">How might the repair of curved pipes mimic the mucus that shipworms secrete as they tunnel?</span><span class="zh" lang="zh-CN">我们能否让弯管修复模仿船蛆钻洞时分泌黏液的方式？</span></li></ul></div></details>
+</article><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>03</b><span>/ 05</span><span class="en">Experiments</span><span class="zh" lang="zh-CN">实验</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">Steering, extruding, setting</span><span class="zh" lang="zh-CN">转向、挤出、固化</span></span></h2>
+  <div class="vz vz-cards-b" data-reveal style="--d:80ms"><div class="vz-cards"><ul style="--n:2"><li><span class="mono">01</span><b><span class="en">1-1 · Steering</span><span class="zh" lang="zh-CN">1-1 · 转向</span></b><span class="vz-r"><span class="en">A servo pulls a line so the robot picks the right branch</span><span class="zh" lang="zh-CN">舵机牵引拉线，在岔口选对路径</span></span></li><li><span class="mono">02</span><b><span class="en">2-1 / 2-2 · Extrusion</span><span class="zh" lang="zh-CN">2-1 / 2-2 · 挤出</span></b><span class="vz-r"><span class="en">A ring extruder presses cement onto the damaged wall</span><span class="zh" lang="zh-CN">环形挤出结构把水泥压到破损内壁</span></span></li></ul></div></div><div class="vz vz-samples-b" data-reveal style="--d:170ms"><div class="vz-samples"><p class="mono vz-k">5 <span class="en">Cement mixes tested</span><span class="zh" lang="zh-CN">测试的水泥配比</span></p>
+  <div class="vz-samples-row"><ol><li><i></i><span class="mono">1</span></li><li><i></i><span class="mono">2</span></li><li><i></i><span class="mono">3</span></li><li><i></i><span class="mono">4</span></li><li class="is-key"><i></i><span class="mono">5</span></li></ol><div><b><span class="en">Sample 5 (44:22:34) did best in pressure tests</span><span class="zh" lang="zh-CN">5 号样本（44:22:34）压力测试表现最好</span></b><span class="mono muted"><span class="en">Beijing Union University materials lab</span><span class="zh" lang="zh-CN">北京联合大学材料实验室</span></span></div></div></div></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">Experiment 1-1: a servo pulls a line on the inflatable body so the robot chooses the right branch at junctions.</span><span class="zh" lang="zh-CN">实验 1-1：舵机牵引充气体上的拉线，让机器人在岔口选择正确的路径。</span></li><li><span class="en">Experiments 2-1 and 2-2: a ring extruder presses cement onto the damaged wall; five mix ratios were tested, and sample 5 (44:22:34) performed best in pressure tests at the Beijing Union University materials lab.</span><span class="zh" lang="zh-CN">实验 2-1 和 2-2：用环形挤出结构把水泥压到破损内壁上；测试了五种配比，5 号样本（44:22:34）在北京联合大学材料实验室的压力测试中表现最好。</span></li></ul></div></details>
+</article><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>04</b><span>/ 05</span><span class="en">Concept</span><span class="zh" lang="zh-CN">概念</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">Four steps to a patch</span><span class="zh" lang="zh-CN">四步完成修补</span></span></h2>
+  <div class="vz vz-steps-b" data-reveal style="--d:80ms"><ol class="vz-steps" style="--n:4"><li><span class="vz-dot mono">01</span>
+  <b><span class="en">Steer</span><span class="zh" lang="zh-CN">转向</span></b><span><span class="en">to the damage</span><span class="zh" lang="zh-CN">到达破损处</span></span></li><li><span class="vz-dot mono">02</span>
+  <b><span class="en">Inflate</span><span class="zh" lang="zh-CN">充气</span></b><span><span class="en">the air column</span><span class="zh" lang="zh-CN">撑起气柱</span></span></li><li><span class="vz-dot mono">03</span>
+  <b><span class="en">Release</span><span class="zh" lang="zh-CN">释放</span></b><span><span class="en">cement-soaked fabric</span><span class="zh" lang="zh-CN">浸水泥的无纺布</span></span></li><li class="is-key"><span class="vz-dot mono">04</span>
+  <b><span class="en">Set &amp; recover</span><span class="zh" lang="zh-CN">固化回收</span></b><span><span class="en">cement sets, column retracts</span><span class="zh" lang="zh-CN">水泥固化后回收气柱</span></span></li></ol></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">Steer to the damage, inflate the air column, release cement-soaked non-woven fabric, then let the cement set and recover the air column.</span><span class="zh" lang="zh-CN">控制转向到达破损处，充起气柱，释放浸有水泥的无纺布，待水泥固定后回收气柱。</span></li></ul></div></details>
+</article><article class="chapter vz-ch">
+  <p class="mono ch-num" data-reveal><b>05</b><span>/ 05</span><span class="en">System</span><span class="zh" lang="zh-CN">系统与服务</span></p>
+  <h2 class="display h-s hd" data-reveal><span class="hl"><span class="en">Who keeps the pipes working</span><span class="zh" lang="zh-CN">谁在维护这些管道</span></span></h2>
+  <div class="vz vz-hub-b" data-reveal style="--d:80ms"><div class="vz-hub"><div class="vz-hub-map"><svg class="vz-hub-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M50 50L50.0 12.0" vector-effect="non-scaling-stroke"/><path d="M50 50L84.6 31.0" vector-effect="non-scaling-stroke"/><path d="M50 50L84.6 69.0" vector-effect="non-scaling-stroke"/><path d="M50 50L50.0 88.0" vector-effect="non-scaling-stroke"/><path d="M50 50L15.4 69.0" vector-effect="non-scaling-stroke"/><path d="M50 50L15.4 31.0" vector-effect="non-scaling-stroke"/></svg><p class="vz-hub-c"><span><span class="en">Pipe repair service</span><span class="zh" lang="zh-CN">管道修复服务</span></span></p><ul><li style="left:50.0%;top:12.0%"><span class="en">Regulators</span><span class="zh" lang="zh-CN">监管部门</span></li><li style="left:84.6%;top:31.0%"><span class="en">Utilities</span><span class="zh" lang="zh-CN">水电集团</span></li><li style="left:84.6%;top:69.0%"><span class="en">Contractors</span><span class="zh" lang="zh-CN">工程承包方</span></li><li style="left:50.0%;top:88.0%"><span class="en">Residents</span><span class="zh" lang="zh-CN">社区居民</span></li><li style="left:15.4%;top:69.0%"><span class="en">Research labs</span><span class="zh" lang="zh-CN">科研机构</span></li><li style="left:15.4%;top:31.0%"><span class="en">Suppliers</span><span class="zh" lang="zh-CN">设备材料供应商</span></li></ul></div>
+  <p class="mono vz-k"><span class="en">Linked by contracts, funding and feedback</span><span class="zh" lang="zh-CN">通过合同、资金和反馈连接</span></p></div></div><div class="vz vz-chips-b" data-reveal style="--d:170ms"><div class="vz-chips"><p class="mono vz-k"><span class="en">Also designed</span><span class="zh" lang="zh-CN">同时设计</span></p><ul><li><span class="en">Web UI: inspect, move, release, inflate</span><span class="zh" lang="zh-CN">网页界面：检测、移动、释放、充气</span></li><li><span class="en">Service blueprint: before, during, after</span><span class="zh" lang="zh-CN">服务蓝图：修复前、中、后</span></li></ul></div></div>
+  <details class="ch-more"><summary class="mono"><span class="en">Read the notes</span><span class="zh" lang="zh-CN">展开文字说明</span></summary>
+    <div class="prose"><ul><li><span class="en">A system map links government regulators, utilities, contractors, suppliers, research labs and residents through contracts, funding and feedback.</span><span class="zh" lang="zh-CN">系统图把监管部门、水电集团、工程承包方、设备材料供应商、科研机构和社区居民，通过合同、资金和反馈连接起来。</span></li><li><span class="en">A web interface handles probe inspection, robot movement, cement release and inflation, and a service blueprint covers the work before, during and after a repair.</span><span class="zh" lang="zh-CN">网页界面负责探头检测、机器人移动、水泥释放和充气控制；服务蓝图覆盖修复前、中、后的全过程。</span></li></ul></div></details>
+</article></div></div></section>
+<section class="section boards-sec"><div class="wrap">
+  <div class="sec-head">
+    <h2 class="display h-l hd" data-split><span class="hl"><span class="en">Portfolio boards</span><span class="zh" lang="zh-CN">作品展板</span></span></h2>
+    <p class="mono muted" data-reveal><span class="en">10 boards · tap to enlarge</span><span class="zh" lang="zh-CN">共 10 张 · 点击放大</span></p>
+  </div>
+  <div class="boards"><a class="board" href="assets/img/larvafix/01.jpg" data-lightbox="bd-1" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/01.jpg" alt="Cover" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>01</span><span class="en">Cover</span><span class="zh" lang="zh-CN">封面</span></span>
+</a><a class="board" href="assets/img/larvafix/02.jpg" data-lightbox="bd-2" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/02.jpg" alt="Background research and ethnography" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>02</span><span class="en">Background research and ethnography</span><span class="zh" lang="zh-CN">背景研究与民族志</span></span>
+</a><a class="board" href="assets/img/larvafix/03.jpg" data-lightbox="bd-3" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/03.jpg" alt="Desk research and ecosystem map" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>03</span><span class="en">Desk research and ecosystem map</span><span class="zh" lang="zh-CN">案头研究与生态图</span></span>
+</a><a class="board" href="assets/img/larvafix/04.jpg" data-lightbox="bd-4" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/04.jpg" alt="Design idea and experiment plan" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>04</span><span class="en">Design idea and experiment plan</span><span class="zh" lang="zh-CN">设计思路与实验计划</span></span>
+</a><a class="board" href="assets/img/larvafix/05.jpg" data-lightbox="bd-5" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/05.jpg" alt="Experiment 1-1: steering in bends" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>05</span><span class="en">Experiment 1-1: steering in bends</span><span class="zh" lang="zh-CN">实验 1-1：弯管转向</span></span>
+</a><a class="board" href="assets/img/larvafix/06.jpg" data-lightbox="bd-6" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/06.jpg" alt="Experiments 2-1 and 2-2: extrusion and cement" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>06</span><span class="en">Experiments 2-1 and 2-2: extrusion and cement</span><span class="zh" lang="zh-CN">实验 2-1、2-2：挤出与水泥配比</span></span>
+</a><a class="board" href="assets/img/larvafix/07.jpg" data-lightbox="bd-7" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/07.jpg" alt="Material testing" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>07</span><span class="en">Material testing</span><span class="zh" lang="zh-CN">材料测试</span></span>
+</a><a class="board" href="assets/img/larvafix/08.jpg" data-lightbox="bd-8" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/08.jpg" alt="Concept and patching process" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>08</span><span class="en">Concept and patching process</span><span class="zh" lang="zh-CN">概念设计与修补流程</span></span>
+</a><a class="board" href="assets/img/larvafix/09.jpg" data-lightbox="bd-9" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/09.jpg" alt="System map and web UI" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>09</span><span class="en">System map and web UI</span><span class="zh" lang="zh-CN">系统图与网页界面</span></span>
+</a><a class="board" href="assets/img/larvafix/10.jpg" data-lightbox="bd-10" data-cursor="Zoom" data-reveal>
+  <img src="assets/img/larvafix/10.jpg" alt="Service blueprint and PESTE research" loading="lazy" decoding="async" width="2000" height="707">
+  <span class="board-cap mono"><span>10</span><span class="en">Service blueprint and PESTE research</span><span class="zh" lang="zh-CN">服务蓝图与 PESTE 分析</span></span>
+</a></div>
+</div></section>
+<template id="bd-1"><figure class="lb-slide"><img src="assets/img/larvafix/01.jpg" alt="Cover">
+<figcaption class="mono muted">01 / 10 · <span class="en">Cover</span><span class="zh" lang="zh-CN">封面</span></figcaption></figure></template><template id="bd-2"><figure class="lb-slide"><img src="assets/img/larvafix/02.jpg" alt="Background research and ethnography">
+<figcaption class="mono muted">02 / 10 · <span class="en">Background research and ethnography</span><span class="zh" lang="zh-CN">背景研究与民族志</span></figcaption></figure></template><template id="bd-3"><figure class="lb-slide"><img src="assets/img/larvafix/03.jpg" alt="Desk research and ecosystem map">
+<figcaption class="mono muted">03 / 10 · <span class="en">Desk research and ecosystem map</span><span class="zh" lang="zh-CN">案头研究与生态图</span></figcaption></figure></template><template id="bd-4"><figure class="lb-slide"><img src="assets/img/larvafix/04.jpg" alt="Design idea and experiment plan">
+<figcaption class="mono muted">04 / 10 · <span class="en">Design idea and experiment plan</span><span class="zh" lang="zh-CN">设计思路与实验计划</span></figcaption></figure></template><template id="bd-5"><figure class="lb-slide"><img src="assets/img/larvafix/05.jpg" alt="Experiment 1-1: steering in bends">
+<figcaption class="mono muted">05 / 10 · <span class="en">Experiment 1-1: steering in bends</span><span class="zh" lang="zh-CN">实验 1-1：弯管转向</span></figcaption></figure></template><template id="bd-6"><figure class="lb-slide"><img src="assets/img/larvafix/06.jpg" alt="Experiments 2-1 and 2-2: extrusion and cement">
+<figcaption class="mono muted">06 / 10 · <span class="en">Experiments 2-1 and 2-2: extrusion and cement</span><span class="zh" lang="zh-CN">实验 2-1、2-2：挤出与水泥配比</span></figcaption></figure></template><template id="bd-7"><figure class="lb-slide"><img src="assets/img/larvafix/07.jpg" alt="Material testing">
+<figcaption class="mono muted">07 / 10 · <span class="en">Material testing</span><span class="zh" lang="zh-CN">材料测试</span></figcaption></figure></template><template id="bd-8"><figure class="lb-slide"><img src="assets/img/larvafix/08.jpg" alt="Concept and patching process">
+<figcaption class="mono muted">08 / 10 · <span class="en">Concept and patching process</span><span class="zh" lang="zh-CN">概念设计与修补流程</span></figcaption></figure></template><template id="bd-9"><figure class="lb-slide"><img src="assets/img/larvafix/09.jpg" alt="System map and web UI">
+<figcaption class="mono muted">09 / 10 · <span class="en">System map and web UI</span><span class="zh" lang="zh-CN">系统图与网页界面</span></figcaption></figure></template><template id="bd-10"><figure class="lb-slide"><img src="assets/img/larvafix/10.jpg" alt="Service blueprint and PESTE research">
+<figcaption class="mono muted">10 / 10 · <span class="en">Service blueprint and PESTE research</span><span class="zh" lang="zh-CN">服务蓝图与 PESTE 分析</span></figcaption></figure></template>
+<div class="lightbox" role="dialog" aria-modal="true" aria-label="Board" hidden>
+  <button class="lb-close mono" type="button" data-lb-close><span class="en">Close</span><span class="zh" lang="zh-CN">关闭</span> ✕</button>
+  <button class="lb-nav lb-prev" type="button" data-lb-step="-1"><svg width="18" height="18" viewBox="0 0 28 28" aria-hidden="true"><path d="M23 14H5M12 7l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span class="lb-nav-t mono"><span class="en">Previous</span><span class="zh" lang="zh-CN">上一张</span></span></button><button class="lb-nav lb-next" type="button" data-lb-step="1"><svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><path d="M5 14h18M16 7l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span class="lb-nav-t mono"><span class="en">Next</span><span class="zh" lang="zh-CN">下一张</span></span></button>
+  <div class="lb-body"></div>
+</div>
+<section class="section"><div class="wrap"><div class="highlight">
+  <p class="mono muted" data-reveal><span class="en">Outcome</span><span class="zh" lang="zh-CN">成果</span></p>
+  <p class="display h-l" data-split><span class="en">Repairing a pipe is a service that connects science, policy and the people who live above it.</span><span class="zh" lang="zh-CN">修一根管道，是一项连接科学、政策和地面上居民的服务。</span></p>
+</div></div></section>
+<a class="back-fab mono" href="work.html" data-back data-label="Back" aria-label="Back / 返回"><svg width="18" height="18" viewBox="0 0 28 28" aria-hidden="true"><path d="M23 14H5M12 7l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span><span class="en">Back</span><span class="zh" lang="zh-CN">返回</span></span></a>
+<a class="next" href="project-digestion.html" data-label="Digestion" data-cursor="Next"><div class="wrap">
+  <p class="mono muted"><span class="en">Next project</span><span class="zh" lang="zh-CN">下一个作品</span> · 2026</p>
+  <p class="display h-xl hd hd-next"><span class="hl"><span class="en">Digestion: An External Organ for Information Detox</span><span class="zh" lang="zh-CN">Digestion：信息排毒的体外器官</span></span></p>
+</div></a>
+<section class="field-host end-band" aria-label="Eagan">
+  <canvas class="field" data-lines="18" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="mono muted" data-reveal="fade"><span class="en">Thanks for visiting</span><span class="zh" lang="zh-CN">感谢浏览</span></p>
+    <div class="hero-name end-name"><p class="display h-xxl hd" data-split data-vf><span class="hl">Eagan</span></p></div>
+  </div>
+</section>
+</main>
+<footer class="wrap">
+  <div class="foot mono">
+    <span>© 2026 Eagan</span>
+    <span><span class="en">Service &amp; product design</span><span class="zh" lang="zh-CN">服务设计 · 产品设计</span></span>
+    <a href="#top" data-label="Top"><span class="en">Back to top ↑</span><span class="zh" lang="zh-CN">回到顶部 ↑</span></a>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
