@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Lumo Remedy Console: concept prototype of a staff tool that decides which price-shocked riders get a remedy. Sample data.">
+<title>Lumo 补救决策台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* Layout: dark command bar on top, slim nav rail on the left, dense working canvas on the right; detail opens in a side drawer. Palette follows the portfolio (orange = spend, teal = model/returns, amber = guardrails). */
+:root{
+  --bg:#F7F6F2; --surface:#FFFFFF; --ink:#161616; --muted:#5F5E5A; --faint:#8C8A84; --line:#E2DFD8; --chip:#EEECE6;
+  --accent:#E2551B; --accent-soft:#FCE9DF; --teal:#1F7A6D; --teal-soft:#E1F1EE; --amber:#9A6312; --amber-soft:#FBF0D9;
+  --neg:#B3372A; --neg-soft:#FBE7E4; --bar:#171716; --bar-ink:#F2F0EB; --bar-muted:#A9A69F;
+  --font:"Inter","Noto Sans SC",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121211; --surface:#1B1A19; --ink:#EDEBE6; --muted:#A8A59E; --faint:#7D7A74; --line:#302E2B; --chip:#272624;
+  --accent:#F27A45; --accent-soft:#3A2419; --teal:#53B5A5; --teal-soft:#16302B; --amber:#D9A24C; --amber-soft:#33270F;
+  --neg:#E5705F; --neg-soft:#3A1E1A; --bar:#0B0B0A; --bar-ink:#EDEBE6; --bar-muted:#8F8C86; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121211; --surface:#1B1A19; --ink:#EDEBE6; --muted:#A8A59E; --faint:#7D7A74; --line:#302E2B; --chip:#272624;
+  --accent:#F27A45; --accent-soft:#3A2419; --teal:#53B5A5; --teal-soft:#16302B; --amber:#D9A24C; --amber-soft:#33270F;
+  --neg:#E5705F; --neg-soft:#3A1E1A; --bar:#0B0B0A; --bar-ink:#EDEBE6; --bar-muted:#8F8C86; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bar)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bar);color:var(--bar-ink);
+  padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{width:26px;height:26px;border-radius:7px;background:var(--accent);display:grid;place-items:center;font-weight:600;color:#fff;font-size:13px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand b{font-weight:500}
+.brand span{color:var(--bar-muted)}
+.topbar .spacer{flex:1}
+.meta{color:var(--bar-muted);font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:500;white-space:nowrap}
+.pill i{width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block}
+.pill.run{background:rgba(83,181,165,.18);color:#7FD3C4}
+.pill.pause{background:rgba(242,122,69,.2);color:#FFB08A}
+.proto{border:1px solid rgba(255,255,255,.22);color:var(--bar-muted);border-radius:6px;padding:2px 8px;font-size:12px;white-space:nowrap}
+.lang{display:inline-flex;border:1px solid rgba(255,255,255,.22);border-radius:8px;overflow:hidden}
+.lang button{border:0;background:none;color:var(--bar-muted);font-size:12px;padding:3px 10px;font-weight:500}
+.lang button[aria-pressed="true"]{background:var(--bar-ink);color:var(--bar)}
+
+.shell{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:calc(100vh - 50px)}
+.side{border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:4px;background:var(--surface)}
+.side .label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding:4px 10px 8px}
+.nav{display:flex;align-items:center;gap:10px;border:0;background:none;text-align:left;border-radius:8px;padding:9px 10px;color:var(--muted)}
+.nav:hover{background:var(--chip);color:var(--ink)}
+.nav[aria-current="page"]{background:var(--chip);color:var(--ink);font-weight:500}
+.nav svg{width:18px;height:18px;flex:none}
+.nav .badge{margin-left:auto;background:var(--neg);color:#fff;border-radius:999px;font-size:11px;padding:0 7px;line-height:18px}
+.nav .badge.warn{background:var(--amber)}
+.side .foot{margin-top:auto;font-size:12px;color:var(--faint);padding:10px;line-height:1.6}
+
+main{min-width:0;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+@media (min-width:761px){main{padding-left:24px;padding-right:max(24px,env(safe-area-inset-right,0px))}}
+.view{display:flex;flex-direction:column;gap:16px;min-width:0}
+.vhead{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;justify-content:space-between}
+.vhead h1{font-size:22px;font-weight:600;margin:0;text-wrap:balance}
+.vhead p{margin:4px 0 0;color:var(--muted);max-width:76ch}
+
+.banner{border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:flex-start;background:var(--neg-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--neg) 35%,transparent)}
+.banner svg{width:20px;height:20px;color:var(--neg);flex:none;margin-top:1px}
+.banner b{color:var(--neg);font-weight:600}
+.banner .link{margin-left:auto;border:0;background:none;color:var(--neg);font-weight:500;white-space:nowrap;padding:0}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.card h2{font-size:15px;font-weight:600;margin:0}
+.card .sub{color:var(--muted);font-size:13px;margin:3px 0 0}
+.chead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;position:relative}
+.kpi .k{font-size:12px;color:var(--muted)}
+.kpi .v{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12px;color:var(--faint);margin-top:2px}
+.kpi.good .v{color:var(--teal)} .kpi.bad .v{color:var(--neg)} .kpi.spend .v{color:var(--accent)}
+.kpi.alert{border-color:var(--neg)} .kpi.alert .s{color:var(--neg)}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px}
+@media (max-width:1060px){.grid2{grid-template-columns:minmax(0,1fr)}}
+
+.chart{width:100%;height:auto;display:block}
+.chart text{font-family:var(--font);font-size:11px;fill:var(--muted)}
+.slider-row{display:flex;align-items:center;gap:14px;margin-top:8px;flex-wrap:wrap}
+.slider-row label{font-size:13px;color:var(--muted)}
+input[type=range]{flex:1;min-width:160px;accent-color:var(--accent)}
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;font-size:13px}
+.btn:hover{border-color:var(--faint)}
+.btn.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;padding:9px 16px}
+.btn.primary:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:none}
+.readout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.readout div{background:var(--chip);border-radius:10px;padding:10px 12px;min-width:0}
+.readout span{display:block;font-size:12px;color:var(--muted)}
+.readout b{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+
+.mixbar{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;margin:6px 0 14px;background:var(--chip)}
+.mixbar span{display:block;height:100%}
+.mixlist{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.mixlist li{display:flex;align-items:center;gap:10px;font-size:13px}
+.mixlist .dot{width:10px;height:10px;border-radius:3px;flex:none}
+.mixlist .n{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:500}
+.mixlist .why{color:var(--faint);font-size:12px}
+.confirm{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.confirm .box{background:var(--accent-soft);border-radius:10px;padding:12px;font-size:13px;line-height:1.6}
+.confirm .row{display:flex;gap:8px;flex-wrap:wrap}
+.done{color:var(--teal);font-weight:500;font-size:13px;display:flex;gap:6px;align-items:center}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.toolbar input,.toolbar select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 10px;font-size:13px;min-width:0}
+.toolbar input{flex:1 1 160px}
+.tablewrap{overflow-x:auto;margin-top:12px;border-top:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;min-width:820px}
+th{font-size:12px;color:var(--muted);font-weight:500;text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th button{border:0;background:none;padding:0;color:inherit;font-weight:inherit;display:inline-flex;gap:4px;align-items:center}
+th button[aria-sort]{color:var(--ink)}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:color-mix(in srgb,var(--chip) 60%,transparent)}
+td.id{font-weight:500;white-space:nowrap}
+td.id small{display:block;font-weight:400;color:var(--faint);font-size:12px}
+td .muted{color:var(--faint);font-size:12px;display:block}
+.upl{display:flex;align-items:center;gap:8px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.upl .track{width:64px;height:6px;border-radius:3px;background:var(--chip);position:relative;overflow:hidden}
+.upl .track i{position:absolute;top:0;bottom:0;border-radius:3px}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:500;white-space:nowrap}
+.c-send{background:var(--accent-soft);color:var(--accent)}
+.c-rule{background:var(--teal-soft);color:var(--teal)}
+.c-low{background:var(--chip);color:var(--muted)}
+.c-harm{background:var(--neg-soft);color:var(--neg)}
+.c-skip{background:var(--chip);color:var(--faint)}
+.c-apology,.c-hold{background:var(--amber-soft);color:var(--amber)}
+.c-manual{outline:1px dashed currentColor;outline-offset:-1px}
+td.why{color:var(--muted);font-size:13px;max-width:320px}
+.pager{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+.pager .row{display:flex;gap:6px}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+
+.scrim{position:fixed;inset:0;background:rgba(10,10,9,.38);z-index:40}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(500px,100vw);background:var(--surface);z-index:41;border-left:1px solid var(--line);
+  display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.dhead{display:flex;align-items:flex-start;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line)}
+.dhead h3{margin:0;font-size:18px;font-weight:600}
+.dhead p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.x{margin-left:auto;border:1px solid var(--line);background:none;border-radius:8px;width:32px;height:32px;display:grid;place-items:center;flex:none}
+.dbody{overflow-y:auto;padding:18px 20px 28px;display:flex;flex-direction:column;gap:18px}
+.dsec h4{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin:0 0 10px;font-weight:500}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tl li{display:grid;grid-template-columns:76px 14px minmax(0,1fr);gap:10px;position:relative;padding-bottom:14px}
+.tl li:last-child{padding-bottom:0}
+.tl .t{font-size:12px;color:var(--faint);text-align:right;padding-top:1px;font-variant-numeric:tabular-nums}
+.tl .m{width:10px;height:10px;border-radius:50%;margin-top:4px;background:var(--line);position:relative}
+.tl li:not(:last-child) .m::after{content:"";position:absolute;left:4px;top:12px;width:2px;height:calc(100% + 14px);background:var(--line)}
+.tl .d{font-size:13px} .tl .d small{display:block;color:var(--muted);font-size:12px}
+.calc{background:var(--chip);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:13px}
+.calc b{font-variant-numeric:tabular-nums;text-align:right;font-weight:500}
+.calc .tot{border-top:1px solid var(--line);padding-top:6px;font-weight:600}
+.msg{border:1px solid var(--line);border-radius:14px;padding:14px;font-size:13px;line-height:1.65;background:var(--bg)}
+.msg .from{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:6px}
+.msg .from i{width:16px;height:16px;border-radius:4px;background:var(--accent);display:inline-block}
+.msg .capchip{display:inline-block;margin-top:8px;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:500}
+.ovr{display:flex;flex-direction:column;gap:10px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg label{border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.seg label:has(input:checked){border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.seg input{accent-color:var(--accent);margin:0}
+textarea{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface);min-height:70px;resize:vertical;font-size:13px}
+.err{color:var(--neg);font-size:12px}
+
+.prog{height:10px;border-radius:5px;background:var(--chip);overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--teal)}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.group{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface)}
+.group .tag{font-size:12px;color:var(--muted)}
+.group .big{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:4px}
+.group .s{font-size:12px;color:var(--faint)}
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.check{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:12px;background:var(--chip);font-size:13px}
+.check svg{width:18px;height:18px;flex:none;margin-top:1px}
+.check.ok svg{color:var(--teal)} .check.wait svg{color:var(--amber)}
+.note{font-size:12px;color:var(--faint)}
+
+.gtable{min-width:760px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;white-space:nowrap}
+.status i{width:8px;height:8px;border-radius:50%}
+.st-ok{color:var(--teal)} .st-ok i{background:var(--teal)}
+.st-near{color:var(--amber)} .st-near i{background:var(--amber)}
+.st-trip{color:var(--neg)} .st-trip i{background:var(--neg)}
+.sim{display:flex;flex-direction:column;gap:10px}
+.toggle{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer}
+.toggle input{width:36px;height:20px;appearance:none;-webkit-appearance:none;background:var(--line);border-radius:10px;position:relative;flex:none;cursor:pointer;margin:0;transition:background .15s}
+.toggle input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s}
+.toggle input:checked{background:var(--neg)}
+.toggle input:checked::after{transform:translateX(16px)}
+.toggle b{font-weight:500;display:block}
+.toggle small{color:var(--muted);font-size:12px}
+
+.log{list-style:none;margin:0;padding:0}
+.log li{display:grid;grid-template-columns:56px 90px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+.log .t{color:var(--faint);font-variant-numeric:tabular-nums}
+.log .who{color:var(--muted)}
+.log .who.me{color:var(--accent)}
+
+@media (max-width:760px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-left,0px));gap:4px}
+  .side .label,.side .foot{display:none}
+  .nav{white-space:nowrap}
+  .readout{grid-template-columns:minmax(0,1fr)}
+  .meta{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><div class="logo">L</div><b data-en="Remedy Console">补救决策台</b><span data-en="Lumo Rides · Retention &amp; CRM">Lumo 出行 · 留存与 CRM</span></div>
+  <div class="spacer"></div>
+  <span class="meta num" data-en="Kuala Lumpur · Fri 20 Nov 2026 · 09:30">吉隆坡 · 2026-11-20 周五 · 09:30</span>
+  <span id="runPill" class="pill run"><i></i>运行中</span>
+  <span class="proto" data-en="Concept prototype · sample data">概念原型 · 示意数据</span>
+  <div class="lang" role="group" aria-label="语言 / Language">
+    <button type="button" data-lang="zh" aria-pressed="true">中</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="side" aria-label="视图">
+    <div class="label" data-en="Workspace">工作台</div>
+    <button class="nav" data-view="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg><span data-en="Today">今日决策</span></button>
+    <button class="nav" data-view="experiment"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg><span data-en="Experiment">实验监控</span></button>
+    <button class="nav" data-view="guardrails"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span data-en="Guardrails">护栏告警</span><span id="guardBadge" class="badge" hidden></span></button>
+    <button class="nav" data-view="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span data-en="Activity log">操作记录</span></button>
+    <div class="foot" data-en="Break-even: remedied riders must return at least 6.4 points more often than unremedied ones<br>(RM2 ÷ 90-day value RM31.3)">回本线：补了比不补多回来 ≥ 6.4 个百分点<br>（RM2 ÷ 90 天价值 RM31.3）</div>
+  </nav>
+
+  <main>
+    <div id="banner" class="banner" hidden></div>
+
+    <section class="view" id="view-today">
+      <div class="vhead">
+        <div><h1 data-en="Today's decisions">今日决策</h1><p data-en="Riders who hit a price shock and have now gone quiet. Check eligibility first, then rank by how much more likely they are to come back if remedied, and send only to those with high uplift.">今天进入沉默期的受冲击乘客：先过资格，再按「补了比不补多回来多少」排序，只把补救发给增量高的人。</p></div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="grid2">
+        <div class="card">
+          <div class="chead"><div><h2 data-en="How many riders to send to">发给多少人最划算</h2><p class="sub" data-en="X axis: send to the top X% by model score. Y axis: 90-day revenue minus cost (RM31.3 per rider, RM2 per remedy).">横轴：发给模型分最高的前 X%；纵轴：90 天收入减成本（按每人 RM31.3、补救成本 RM2）</p></div></div>
+          <svg id="curve" class="chart" viewBox="0 0 640 250" role="img" aria-label="发放比例与 90 天收入减成本的关系曲线"></svg>
+          <div class="slider-row">
+            <label for="pct" data-en="Send ratio">发放比例</label>
+            <input id="pct" type="range" min="1" max="100" step="1" value="10">
+            <b id="pctOut" class="num" style="min-width:48px;text-align:right">10%</b>
+          </div>
+          <div class="presets">
+            <button class="btn" data-preset="10" data-en="Top 10% (recommended)">前 10%（建议）</button>
+            <button class="btn" data-preset="max" data-en="Best payoff">回本最大点</button>
+            <button class="btn" data-preset="100" data-en="Send to all">全发</button>
+          </div>
+          <div class="readout">
+            <div><span data-en="Today's cutoff">本次发放线</span><b id="cutOut">—</b></div>
+            <div><span data-en="Break-even">回本线</span><b>+6.4pp</b></div>
+            <div><span data-en="Avg uplift (selected)">平均增量（已选人群）</span><b id="avgOut">—</b></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="chead"><div><h2 data-en="Today's split">今日分流</h2><p class="sub" data-en="Each rider lands in exactly one outcome">每位乘客只会落进一个结果</p></div></div>
+          <div class="mixbar" id="mixbar"></div>
+          <ul class="mixlist" id="mixlist"></ul>
+          <div class="confirm" id="confirm"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h2 data-en="Shocked rider queue">受冲击乘客队列</h2><p class="sub" data-en="Click any row for the timeline, model estimate and message preview, or to override the decision">点任意一行查看完整时间线、模型估算和推送预览，并可人工改判</p></div></div>
+        <div class="toolbar">
+          <input id="q" type="search" placeholder="搜索乘客编号，如 R-2041" data-en-ph="Search rider ID, e.g. R-2041" aria-label="搜索乘客编号">
+          <select id="fZone" aria-label="区域"></select>
+          <select id="fType" aria-label="冲击类型"></select>
+          <select id="fDec" aria-label="决策"></select>
+        </div>
+        <div class="tablewrap">
+          <table>
+            <thead><tr>
+              <th data-en="Rider">乘客</th><th data-en="Shock">这次遇到的冲击</th>
+              <th><button data-sort="silent"><span data-en="Silent / usual gap">沉默 / 平时间隔</span><span class="arrow"></span></button></th>
+              <th><button data-sort="u"><span data-en="Uplift">增量分</span><span class="arrow"></span></button></th>
+              <th data-en="Decision">系统决策</th><th data-en="Why">为什么</th>
+            </tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pinfo"></span><div class="row"><button class="btn" id="prev" data-en="Previous">上一页</button><button class="btn" id="next" data-en="Next">下一页</button></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-experiment" hidden>
+      <div class="vhead"><div><h1 data-en="Experiment">实验监控</h1><p data-en="Tests whether remedies really bring riders back. 10% of selected riders are held out as a control; 5% of unselected riders get a random send, so targeted sending can be compared with blanket sending.">检验「补了才回来」是不是真的：模型选中的人里随机留 10% 不发做对照，未选中的人里随机发 5%，用来比较「精准发」和「撒网发」。</p></div></div>
+      <div class="card">
+        <div class="chead"><div><h2 data-en="Sample progress">样本进度</h2><p class="sub" data-en="Detecting a 6.4-point difference needs about 5,074 riders (4,567 test · 508 control). At about 128 a day that takes roughly 40 days.">要分辨 +6.4pp 的差别，需要约 5,074 人（测试 4,567 · 对照 508），按每天约 128 人入组约 40 天</p></div><span class="pill" style="background:var(--teal-soft);color:var(--teal)"><i></i><span data-en="Day 17 / 40">第 17 / 40 天</span></span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px" class="num"><span data-en="2,140 enrolled">已入组 2,140 人</span><span style="color:var(--muted)" data-en="Target 5,074 · 42%">目标 5,074 · 42%</span></div>
+        <div class="prog"><i style="width:42%"></i></div>
+      </div>
+      <div class="groups">
+        <div class="group"><div class="tag" data-en="Test · selected and sent">测试组 · 模型选中并发放</div><div class="big">64.1%</div><div class="s num" data-en="30-day return · n = 1,712">30 天回流 · n = 1,712</div></div>
+        <div class="group"><div class="tag" data-en="Control · selected, not sent (10%)">对照组 · 模型选中但不发（10%）</div><div class="big">60.3%</div><div class="s num" data-en="30-day return · n = 190">30 天回流 · n = 190</div></div>
+        <div class="group"><div class="tag" data-en="Random 5% · not selected, sent">随机 5% · 未选中但发放</div><div class="big">52.8%</div><div class="s num" data-en="vs 51.9% for not selected, not sent · n = 238">对比未选中不发 51.9% · n = 238</div></div>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h2 data-en="Uplift from remedies (test − control)">补救带来的增量（测试组 − 对照组）</h2><p class="sub" data-en="Cumulative estimate and 95% interval by day; dashed lines show how the interval narrows at the current variance">每天累计的点估计和 95% 区间；虚线为按现有方差推算的区间收窄</p></div></div>
+        <svg id="expChart" class="chart" viewBox="0 0 640 260" role="img" aria-label="累计增量和置信区间随天数变化"></svg>
+        <div class="verdict" style="margin-top:12px">
+          <div class="check ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><div data-en="<b>Lower bound above 0</b><br>+3.8 points, interval [+1.2, +6.4]: remedies do bring riders back."><b>区间下限 &gt; 0</b><br>+3.8pp，区间 [+1.2, +6.4]：补救确实让人多回来了。</div></div>
+          <div class="check wait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div data-en="<b>Break-even not proven yet</b><br>The estimate is below +6.4 points. Keep collecting until day 40; 90-day revenue is the final test."><b>还没证明回本</b><br>点估计低于 +6.4pp。继续收集到第 40 天，90 天收入才是最终判据。</div></div>
+          <div class="check ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><div data-en="<b>Targeted beats blanket</b><br>Random sends add only +0.9 points, so sending to everyone is not worth it."><b>精准优于撒网</b><br>随机发的增量只有 +0.9pp，说明不该全发。</div></div>
+        </div>
+        <p class="note" style="margin:12px 0 0" data-en="Sample data for illustration, not experiment results. 30-day return is an early signal; the final call uses 90-day revenue minus cost.">界面示意数据，不是实验结果。30 天回流是早期信号，最终按 90 天收入减成本判定。</p>
+      </div>
+    </section>
+
+    <section class="view" id="view-guardrails" hidden>
+      <div class="vhead"><div><h1 data-en="Guardrails">护栏告警</h1><p data-en="Checked every 15 minutes. When a metric crosses its stop line the system acts automatically and notifies the owner; resuming needs a person to confirm.">每 15 分钟检查一次。越过停止线时系统自动执行对应动作，并通知负责人；恢复需要人工确认。</p></div></div>
+      <div class="card">
+        <div class="tablewrap" style="margin-top:0;border-top:0">
+          <table class="gtable">
+            <thead><tr><th data-en="Metric">指标</th><th data-en="Now">当前</th><th data-en="Stop line">停止线</th><th data-en="Last 7 days">近 7 天</th><th data-en="Status">状态</th><th data-en="Automatic action">越线后自动</th></tr></thead>
+            <tbody id="grows"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chead"><div><h2 data-en="Drills">演练</h2><p class="sub" data-en="Flip a switch to see how the console reacts when a guardrail trips">打开开关，看护栏触发后决策台怎么变</p></div></div>
+        <div class="sim">
+          <label class="toggle"><input type="checkbox" id="simShock"><span><b data-en="Shock rate spikes (e.g. citywide surge on a rainy night)">冲击率暴涨（如暴雨夜全城加价）</b><small data-en="Shock rate jumps from 3.1% to 8.4%, past the 6% stop line → capped fares pause automatically; only on-the-spot apologies go out">冲击率从 3.1% 升到 8.4%，超过 6% 停止线 → 自动暂停封顶价，只保留当场致歉</small></span></label>
+          <label class="toggle"><input type="checkbox" id="simComplaint"><span><b data-en="“Why did I get this?” complaints rise">「为什么我收到这条」投诉上升</b><small data-en="Complaint rate rises from 0.6% to 1.4%, past the 1% stop line → all remedy messages pause for copy review">投诉率从 0.6% 升到 1.4%，超过 1% 停止线 → 暂停全部补救推送，等文案复核</small></span></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-log" hidden>
+      <div class="vhead"><div><h1 data-en="Activity log">操作记录</h1><p data-en="Every system action and every manual change is recorded. Overrides need a reason.">系统动作和人工操作都留痕，改判必须写理由。</p></div></div>
+      <div class="card"><ul class="log" id="log"></ul></div>
+    </section>
+  </main>
+</div>
+
+<div id="scrim" class="scrim" hidden></div>
+<aside id="drawer" class="drawer" hidden aria-modal="true" role="dialog" aria-labelledby="dTitle"></aside>
+
+<script>
+(function(){
+/* ---------- language ---------- */
+let LANG='zh';
+try{const s=localStorage.getItem('remedy-lang');if(s==='en'||s==='zh')LANG=s;}catch(e){}
+const T=(zh,en)=>LANG==='en'?en:zh;
+
+/* ---------- constants ---------- */
+const V90=31.26, COST=2, BREAK=COST/V90*100, CAP_BUDGET=400;
+const TODAY=new Date(2026,10,20);
+const WD_ZH=['周日','周一','周二','周三','周四','周五','周六'];
+const WD_EN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const wd=d=>T(WD_ZH,WD_EN)[d.getDay()];
+
+/* ---------- seeded data ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+const rnd=mulberry32(20261120);
+function probit(p){const a=[-39.69683028665376,220.9460984245205,-275.9285104469687,138.357751867269,-30.66479806614716,2.506628277459239],b=[-54.47609879822406,161.5858368580409,-155.6989798598866,66.80131188771972,-13.28068155288572],c=[-0.007784894002430293,-0.3223964580411365,-2.400758277161838,-2.549732539343734,4.374664141464968,2.938163982698783],d=[0.007784695709041462,0.3224671290700398,2.445134137142996,3.754408661907416];const pl=0.02425;let q,r;
+ if(p<pl){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+ if(p>1-pl){q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+ q=p-0.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);}
+const pick=(arr,w)=>{let s=rnd()*w.reduce((x,y)=>x+y,0);for(let i=0;i<arr.length;i++){s-=w[i];if(s<=0)return arr[i];}return arr[arr.length-1];};
+const ZONES=['KLCC','Bangsar','Petaling Jaya','Cheras','Subang Jaya','Mont Kiara','Ampang','Puchong'];
+const ZW=[16,11,18,14,12,8,10,11];
+const FREQ=[{zh:'每周 3 次',en:'3 rides a week',d:2.3},{zh:'每周 2 次',en:'2 rides a week',d:3.5},{zh:'每周 1 次',en:'1 ride a week',d:7},{zh:'约 10 天 1 次',en:'About every 10 days',d:10}];
+const used=new Set();
+function newId(){let id;do{id='R-'+String(1000+Math.floor(rnd()*9000));}while(used.has(id));used.add(id);return id;}
+function shock(){const t=rnd();if(t<.55)return{type:'price',mult:Math.round((1.8+rnd()*0.8)*10)/10};if(t<.85)return{type:'late',late:11+Math.floor(rnd()*15)};return{type:'cancel'};}
+function base(kind){const f=pick(FREQ,[18,34,36,12]);const s=shock();const silent=Math.ceil(f.d*1.5+rnd()*3);
+ return Object.assign({id:newId(),kind,zone:pick(ZONES,ZW),freq:f,interval:f.d,silent,fare:12+Math.floor(rnd()*18),p0:0.32+rnd()*0.42},s);}
+const N=1284;
+const ups=Array.from({length:N},(_,i)=>4.0+2.52*probit((i+0.5)/N));
+for(let i=ups.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[ups[i],ups[j]]=[ups[j],ups[i]];}
+const riders=[];
+for(let i=0;i<N;i++){const r=base('scored');r.u=Math.round(ups[i]*10)/10;riders.push(r);}
+for(let i=0;i<37;i++){const r=base('new');r.u=null;r.freq={zh:'新用户 · 只叫过 1–2 次',en:'New rider · 1–2 rides so far'};r.interval=null;r.silent=3+Math.floor(rnd()*4);riders.push(r);}
+for(let i=0;i<52;i++){const r=base('recent');r.u=Math.round((4+2.52*probit(0.02+rnd()*0.96))*10)/10;r.lastDays=10+Math.floor(rnd()*76);riders.push(r);}
+const scored=riders.filter(r=>r.kind==='scored').slice().sort((a,b)=>b.u-a.u);
+scored.forEach((r,i)=>r.rank=i);
+const prefix=[0];for(const r of scored)prefix.push(prefix[prefix.length-1]+r.u/100*V90-COST);
+const netAt=p=>prefix[Math.round(N*p/100)];
+let maxP=1,maxV=-Infinity;for(let p=1;p<=100;p++){if(netAt(p)>maxV){maxV=netAt(p);maxP=p;}}
+const allNet=netAt(100);
+
+/* ---------- state ---------- */
+const state={pct:10,ov:{},sent:null,simShock:false,simComplaint:false,filter:{q:'',zone:'',type:'',dec:''},sort:{k:'u',dir:-1},page:0,view:'today',log:[]};
+function clock(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+const log=(me,zh,en,t)=>{state.log.unshift({t:t||clock(),me,zh,en});};
+log(false,'生成今日沉默名单：1,284 人可打分，新用户 37 人，90 天内已补 52 人','Built today\'s silent list: 1,284 scorable riders, 37 new riders, 52 remedied in the last 90 days','09:00');
+log(false,'模型分已按本周一重训结果更新（用 90 天前那批人的真实结果 + 30 天早期信号）','Model scores updated from Monday\'s retrain (actual results of the cohort from 90 days ago + 30-day early signal)','09:02');
+log(false,'护栏检查通过：5 项全部在停止线内','Guardrail check passed: all 5 metrics within their stop lines','09:15');
+
+/* ---------- decisions ---------- */
+const DEC={send:{zh:'发封顶价',en:'Send capped fare',c:'c-send',col:'var(--accent)'},rule:{zh:'按规则发',en:'Send by rule',c:'c-rule',col:'var(--teal)'},low:{zh:'不发',en:'Don\'t send',c:'c-low',col:'var(--faint)'},harm:{zh:'不打扰',en:'Leave alone',c:'c-harm',col:'var(--neg)'},skip:{zh:'跳过',en:'Skip',c:'c-skip',col:'var(--line)'},apology:{zh:'仅致歉',en:'Apology only',c:'c-apology',col:'var(--amber)'},hold:{zh:'暂停推送',en:'On hold',c:'c-hold',col:'var(--amber)'}};
+const dl=k=>T(DEC[k].zh,DEC[k].en);
+const cutCount=()=>Math.max(1,Math.round(N*state.pct/100));
+const cutU=()=>scored[cutCount()-1].u;
+function rawDec(r){const o=state.ov[r.id];if(o)return o.to==='send'?(r.kind==='new'?'rule':'send'):(r.u!=null&&r.u<0?'harm':'low');
+ if(r.kind==='recent')return'skip';if(r.kind==='new')return'rule';if(r.u<0)return'harm';return r.rank<cutCount()?'send':'low';}
+function dec(r){const d=rawDec(r);if((d==='send'||d==='rule')&&state.simComplaint)return'hold';if(d==='send'&&state.simShock)return'apology';return d;}
+const fmtU=u=>u==null?'—':(u>=0?'+':'−')+Math.abs(u).toFixed(1)+'pp';
+function reason(r,d){const o=state.ov[r.id];if(o)return T('人工改判：','Manual override: ')+o.reason;
+ switch(d){case'send':return T(`补了比不补多回来 ${fmtU(r.u)}，高于今天的发放线 ${fmtU(cutU())}`,`Remedy lifts return by ${fmtU(r.u)}, above today's cutoff of ${fmtU(cutU())}`);
+ case'rule':return T('新用户没有历史可打分，按规则直接发','New rider with no history to score, so the rule sends it');
+ case'low':return T(`增量 ${fmtU(r.u)}，低于发放线 ${fmtU(cutU())}，发了多半白花钱`,`Uplift ${fmtU(r.u)} is below the ${fmtU(cutU())} cutoff; sending would mostly waste money`);
+ case'harm':return T(`增量为负（${fmtU(r.u)}）：补了反而更不回来`,`Negative uplift (${fmtU(r.u)}): a remedy would make this rider less likely to return`);
+ case'skip':return T(`${r.lastDays} 天前已补过，每人 90 天最多 1 次`,`Remedied ${r.lastDays} days ago; limit is once per 90 days`);
+ case'apology':return T('冲击率越线，封顶价自动暂停，只保留当场致歉','Shock rate crossed its stop line: capped fares paused, apology only');
+ case'hold':return T('投诉率越线，所有补救推送暂停，等文案复核','Complaint rate crossed its stop line: all remedy messages paused for copy review');}}
+const RM=v=>'RM'+Math.round(Math.abs(v)).toLocaleString('en-US');
+const sRM=v=>(v>=0?'+':'−')+RM(v);
+const shockText=r=>r.type==='price'?T(`报价是平时的 ${r.mult} 倍`,`Quoted ${r.mult}× the usual fare`):r.type==='late'?T(`比预计晚到 ${r.late} 分钟`,`Driver arrived ${r.late} min later than estimated`):T('司机接单后取消','Driver cancelled after accepting');
+const shockShort=r=>r.type==='price'?T(`加价 ${r.mult} 倍`,`Surge ${r.mult}×`):r.type==='late'?T(`晚到 ${r.late} 分钟`,`${r.late} min late`):T('司机取消','Driver cancelled');
+function dateOf(daysAgo){const d=new Date(TODAY);d.setDate(d.getDate()-daysAgo);return d;}
+const md=d=>LANG==='en'?`${d.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}`:`${d.getMonth()+1}/${d.getDate()}`;
+const freqText=r=>T(r.freq.zh,r.freq.en);
+const n0=n=>n.toLocaleString('en-US');
+
+/* ---------- computed totals ---------- */
+function totals(){const c={send:0,rule:0,low:0,harm:0,skip:0,apology:0,hold:0};let net=0,kept=0,modelSend=0;
+ for(const r of riders){const d=dec(r);c[d]++;if(d==='send'&&r.u!=null){net+=r.u/100*V90-COST;kept+=r.u/100;modelSend++;}}
+ const spend=(c.send+c.rule)*COST;return{c,net,kept,spend,modelSend,modelSpend:c.send*COST,ruleSpend:c.rule*COST};}
+
+/* ---------- guardrails ---------- */
+function guards(t){return[
+ {name:T('冲击率','Shock rate'),desc:T('受冲击乘客 ÷ 当天叫车人数','Shocked riders ÷ riders who booked today'),v:state.simShock?8.4:3.1,u:'%',stop:6,dir:'max',spark:[2.8,3.4,2.9,3.0,3.3,2.7,3.1],act:T('暂停封顶价，只留当场致歉','Pause capped fares, apology only'),who:T('CRM 团队','CRM team')},
+ {name:T('「为什么我收到」投诉率','“Why did I get this?” complaints'),desc:T('收到推送后投诉的比例','Share of recipients who complain'),v:state.simComplaint?1.4:0.6,u:'%',stop:1,dir:'max',spark:[0.5,0.7,0.6,0.5,0.8,0.6,0.6],act:T('暂停全部推送，复核文案','Pause all messages, review copy'),who:T('运营与客服','Ops & support')},
+ {name:T('今日补救花费','Today\'s remedy spend'),desc:T('模型发放 + 新用户规则','Model sends + new-rider rule'),v:t.spend,u:'RM',stop:CAP_BUDGET,dir:'max',spark:[302,318,296,334,321,310,t.spend],act:T('锁定发放按钮，需降低比例','Lock the send button until the ratio drops'),who:T('财务','Finance')},
+ {name:T('司机高峰每在线小时收入','Driver peak earnings per online hour'),desc:T('对比上月同期','vs same period last month'),v:-0.4,u:'%',stop:-2,dir:'min',spark:[-0.2,-0.5,-0.3,-0.6,-0.4,-0.3,-0.4],act:T('停止发放，通知定价团队','Stop sending, alert pricing team'),who:T('定价团队','Pricing team')},
+ {name:T('对照组保留比例','Control group share'),desc:T('模型选中但不发的人占比','Selected riders held out from sending'),v:10,u:'%',stop:10,dir:'floor',spark:[10,10,10,10,10,10,10],act:T('冻结实验，修复分组','Freeze the experiment, fix the split'),who:T('数据团队','Data team')}].map(g=>{
+  let st='ok';if(g.dir==='max'){if(g.v>g.stop)st='trip';else if(g.v>=g.stop*0.8)st='near';}
+  else if(g.dir==='min'){if(g.v<g.stop)st='trip';else if(g.v<=g.stop*0.8)st='near';}
+  else{if(g.v<g.stop)st='trip';}
+  return Object.assign(g,{st});});}
+const fmtG=(g,v)=>g.u==='RM'?RM(v):(v<0?'−'+Math.abs(v):v)+g.u;
+
+/* ---------- renderers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+
+function renderKPI(t){const paused=state.simShock||state.simComplaint;const over=t.spend>CAP_BUDGET;
+ $('#kpis').innerHTML=`
+ <div class="kpi"><div class="k">${T('今日进入沉默期的受冲击乘客','Shocked riders gone quiet today')}</div><div class="v">1,373</div><div class="s">${T('可打分 1,284 · 新用户 37 · 已补过 52','1,284 scorable · 37 new · 52 already remedied')}</div></div>
+ <div class="kpi ${paused?'alert':''}"><div class="k">${T('模型发放','Model sends')}</div><div class="v">${paused?T('已暂停','Paused'):n0(t.c.send)+T(' 人','')}</div><div class="s">${paused?(state.simComplaint?T('投诉率越线，全部推送暂停','Complaints over the line, all messages paused'):T('冲击率越线，只发致歉','Shock rate over the line, apology only')):T('模型分前 '+state.pct+'% · 发放线 ','Top '+state.pct+'% by score · cutoff ')+fmtU(cutU())}</div></div>
+ <div class="kpi spend ${over?'alert':''}"><div class="k">${T('今日补救花费','Remedy spend today')}</div><div class="v">${RM(t.spend)}</div><div class="s">${over?T('超出上限 RM400，请降低比例','Over the RM400 cap; lower the ratio'):T('模型 ','Model ')+RM(t.modelSpend)+T(' + 新用户 ',' + new riders ')+RM(t.ruleSpend)+T(' · 上限 RM400',' · cap RM400')}</div></div>
+ <div class="kpi"><div class="k">${T('每多留住 1 人的成本','Cost per extra rider kept')}</div><div class="v">${t.kept>0?RM(t.modelSpend/t.kept):'—'}</div><div class="s">${T('全发约 RM50','About RM50 if sent to all')}</div></div>
+ <div class="kpi ${t.net>=0?'good':'bad'}"><div class="k">${T('预计 90 天收入减成本','Expected 90-day revenue minus cost')}</div><div class="v">${t.modelSend?sRM(t.net):'RM0'}</div><div class="s">${T('全发约 ','About ')+sRM(allNet)+T(' · 只算模型发放部分',' if sent to all · model sends only')}</div></div>`;}
+
+function renderCurve(){const W=640,H=250,L=58,R=16,T_=18,B=34;const ymin=-1000,ymax=200;
+ const X=p=>L+(W-L-R)*p/100,Y=v=>T_+(H-T_-B)*(ymax-v)/(ymax-ymin);
+ let g='';for(const v of[200,0,-200,-400,-600,-800,-1000]){g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="${v===0?1.2:0.6}" ${v===0?'':'stroke-dasharray="2 4"'}/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v===0?'0':(v>0?'+':'−')+Math.abs(v)}</text>`;}
+ for(const p of[0,25,50,75,100])g+=`<text x="${X(p)}" y="${H-12}" text-anchor="${p===100?'end':'middle'}">${p}%</text>`;
+ let pts=[];for(let p=0;p<=100;p++)pts.push(`${X(p).toFixed(1)},${Y(netAt(p)).toFixed(1)}`);
+ let pos=[`${X(0)},${Y(0)}`];for(let p=0;p<=100;p++){const v=netAt(p);pos.push(`${X(p).toFixed(1)},${Y(Math.max(0,v)).toFixed(1)}`);}pos.push(`${X(100)},${Y(0)}`);
+ const p=state.pct,v=netAt(p);const lx=X(p),ly=Y(v);const anchor=p>70?'end':'start';const dx=p>70?-10:10;
+ $('#curve').innerHTML=`${g}
+ <polygon points="${pos.join(' ')}" fill="var(--teal)" opacity=".16"/>
+ <polyline points="${pts.join(' ')}" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/>
+ <line x1="${X(maxP)}" x2="${X(maxP)}" y1="${T_}" y2="${H-B}" stroke="var(--teal)" stroke-dasharray="3 3" stroke-width="1"/>
+ <text x="${X(maxP)+6}" y="${T_+10}" style="fill:var(--teal)">${T('回本最大点 ','Best payoff ')}${maxP}%</text>
+ <circle cx="${X(100)}" cy="${Y(allNet)}" r="3.5" fill="var(--neg)"/>
+ <text x="${X(100)-14}" y="${Y(allNet)+4}" text-anchor="end" style="fill:var(--neg)">${T('全发 ','Send to all ')}${sRM(allNet)}</text>
+ <line x1="${lx}" x2="${lx}" y1="${T_}" y2="${H-B}" stroke="var(--accent)" stroke-width="1.2"/>
+ <circle cx="${lx}" cy="${ly}" r="6" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+ <text x="${lx+dx}" y="${Math.min(ly+22,H-B-6)}" text-anchor="${anchor}" style="fill:var(--accent);font-weight:600">${T('前 '+p+'%：','Top '+p+'%: ')}${sRM(v)}</text>`;
+ $('#pctOut').textContent=p+'%';$('#cutOut').textContent=fmtU(cutU());
+ const sel=scored.slice(0,cutCount());$('#avgOut').textContent=fmtU(sel.reduce((s,r)=>s+r.u,0)/sel.length);
+ document.querySelectorAll('[data-preset]').forEach(b=>{const k=b.dataset.preset;b.classList.toggle('on',(k==='max'?maxP:+k)===p);});
+ $('#pct').disabled=!!state.sent;}
+
+function renderMix(t){const order=['send','rule','apology','hold','low','harm','skip'];const total=riders.length;
+ const why={send:T('模型分高于发放线','Model score above the cutoff'),rule:T('新用户没有历史可打分','New rider, no history to score'),apology:T('封顶价已暂停','Capped fares paused'),hold:T('推送已暂停','Messages paused'),low:T('增量低于发放线','Uplift below the cutoff'),harm:T('补了反而更不回来','A remedy would backfire'),skip:T('90 天内已补过','Remedied in the last 90 days')};
+ $('#mixbar').innerHTML=order.filter(k=>t.c[k]).map(k=>`<span title="${dl(k)} ${t.c[k]}" style="width:${t.c[k]/total*100}%;background:${DEC[k].col}"></span>`).join('');
+ $('#mixlist').innerHTML=order.filter(k=>t.c[k]).map(k=>`<li><span class="dot" style="background:${DEC[k].col}"></span><span>${dl(k)}<br><span class="why">${why[k]}</span></span><span class="n">${n0(t.c[k])}</span></li>`).join('');
+ const c=$('#confirm');const paused=state.simShock||state.simComplaint;const over=t.spend>CAP_BUDGET;const n=t.c.send+t.c.rule;
+ if(state.sent){c.innerHTML=`<div class="done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>${T(`今日已发放 ${state.sent.n} 人 · ${RM(state.sent.spend)} · ${state.sent.t}`,`Sent to ${state.sent.n} riders today · ${RM(state.sent.spend)} · ${state.sent.t}`)}</div><p class="note" style="margin:0">${T('24 小时内送达。明天 09:00 生成新名单。','Delivered within 24 hours. A new list is built tomorrow at 09:00.')}</p>`;return;}
+ if(state.confirming){c.innerHTML=`<div class="box">${T(`将向 <b>${n} 人</b>发送「7 天内按平时价 1.3 倍封顶」（模型 ${t.c.send} + 新用户 ${t.c.rule}），预计花费 <b>${RM(t.spend)}</b>。发送后 24 小时内送达，不能撤回；对照组 10% 不会收到。`,`This sends a 7-day fare cap at 1.3× the usual fare to <b>${n} riders</b> (${t.c.send} by model + ${t.c.rule} new riders), costing about <b>${RM(t.spend)}</b>. Messages arrive within 24 hours and can't be recalled; the 10% control group won't receive them.`)}</div><div class="row"><button class="btn primary" id="doSend">${T('确认发放','Send now')}</button><button class="btn ghost" id="cancelSend">${T('取消','Cancel')}</button></div>`;return;}
+ let hint='';if(paused)hint=T('护栏已触发，发放按钮锁定','A guardrail has tripped, so sending is locked');else if(over)hint=T('花费超出今日上限 RM400，先降低发放比例','Spend is over today\'s RM400 cap; lower the send ratio first');else if(!n)hint=T('当前没有需要发放的乘客','No riders to send to right now');
+ c.innerHTML=`<button class="btn primary" id="askSend" ${hint?'disabled':''}>${T(`确认今日发放 · ${n} 人 · ${RM(t.spend)}`,`Confirm today's send · ${n} riders · ${RM(t.spend)}`)}</button>${hint?`<p class="err" style="margin:0">${hint}</p>`:`<p class="note" style="margin:0">${T('发放前会再确认一次','You\'ll confirm once more before anything is sent')}</p>`}`;}
+
+function filtered(){const f=state.filter;let list=riders.filter(r=>{if(f.q&&!r.id.toLowerCase().includes(f.q.toLowerCase()))return false;if(f.zone&&r.zone!==f.zone)return false;if(f.type&&r.type!==f.type)return false;if(f.dec&&dec(r)!==f.dec)return false;return true;});
+ const {k,dir}=state.sort;list.sort((a,b)=>{const av=a[k]==null?-99:a[k],bv=b[k]==null?-99:b[k];return(av-bv)*dir;});return list;}
+function uplBar(u){if(u==null)return`<span class="muted">${T('无历史','No history')}</span>`;const w=Math.min(Math.abs(u)/14,1)*100;const col=u<0?'var(--neg)':u>=BREAK?'var(--teal)':'var(--faint)';
+ return`<span class="upl"><span class="track"><i style="left:0;width:${w}%;background:${col}"></i></span>${fmtU(u)}</span>`;}
+function renderQueue(){const list=filtered();const per=10;const pages=Math.max(1,Math.ceil(list.length/per));state.page=Math.min(state.page,pages-1);
+ const rows=list.slice(state.page*per,state.page*per+per);
+ $('#rows').innerHTML=rows.length?rows.map(r=>{const d=dec(r);const man=state.ov[r.id]?' c-manual':'';const sd=dateOf(r.silent);
+  return`<tr data-id="${r.id}" tabindex="0"><td class="id">${r.id}<small>${r.zone}</small></td><td>${shockShort(r)}<span class="muted">${md(sd)} ${wd(sd)}</span></td>
+  <td class="num">${r.silent}${T(' 天',' days')}<span class="muted">${r.interval?T('平时约 '+r.interval+' 天 1 次','usually every '+r.interval+' days'):freqText(r)}</span></td><td>${uplBar(r.u)}</td>
+  <td><span class="chip ${DEC[d].c}${man}">${dl(d)}${man?T(' · 人工',' · manual'):''}</span></td><td class="why">${esc(reason(r,d))}</td></tr>`;}).join(''):`<tr><td colspan="6" class="empty">${T('没有符合筛选条件的乘客','No riders match these filters')}</td></tr>`;
+ $('#pinfo').textContent=T(`共 ${n0(list.length)} 人 · 第 ${state.page+1} / ${pages} 页`,`${n0(list.length)} riders · page ${state.page+1} of ${pages}`);
+ $('#prev').disabled=state.page===0;$('#next').disabled=state.page>=pages-1;
+ document.querySelectorAll('th button[data-sort]').forEach(b=>{const on=b.dataset.sort===state.sort.k;if(on)b.setAttribute('aria-sort',state.sort.dir<0?'descending':'ascending');else b.removeAttribute('aria-sort');b.querySelector('.arrow').textContent=on?(state.sort.dir<0?' ↓':' ↑'):'';});}
+
+function spark(vals,col){const w=90,h=24;const mn=Math.min(...vals),mx=Math.max(...vals);const rg=mx-mn||1;
+ const pts=vals.map((v,i)=>`${(i/(vals.length-1)*(w-6)+3).toFixed(1)},${(h-3-(v-mn)/rg*(h-6)).toFixed(1)}`);const last=pts[pts.length-1].split(',');
+ return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="1.5"/><circle cx="${last[0]}" cy="${last[1]}" r="2.5" fill="${col}"/></svg>`;}
+function renderGuards(t){const gs=guards(t);const lbl={ok:T('正常','OK'),near:T('接近','Near'),trip:T('已越线','Tripped')};const col={ok:'var(--teal)',near:'var(--amber)',trip:'var(--neg)'};
+ const pre=g=>g.dir==='floor'?T('不少于 ','At least '):g.dir==='min'?T('低于 ','Below '):T('高于 ','Above ');
+ $('#grows').innerHTML=gs.map(g=>`<tr style="cursor:default"><td><b style="font-weight:500">${g.name}</b><span class="muted">${g.desc}</span></td><td class="num">${fmtG(g,g.v)}</td><td class="num" style="color:var(--muted)">${pre(g)}${fmtG(g,g.stop)}</td><td>${spark(g.spark.slice(0,6).concat([g.v]),col[g.st])}</td><td><span class="status st-${g.st}"><i></i>${lbl[g.st]}</span></td><td style="color:var(--muted);font-size:13px">${g.act}<span class="muted">${T('通知：','Notify: ')}${g.who}</span></td></tr>`).join('');
+ const trip=gs.filter(g=>g.st==='trip').length,near=gs.filter(g=>g.st==='near').length;const b=$('#guardBadge');
+ if(trip||near){b.hidden=false;b.textContent=trip||near;b.classList.toggle('warn',!trip);}else b.hidden=true;
+ const tripped=gs.filter(g=>g.st==='trip');const bn=$('#banner');
+ if(tripped.length){bn.hidden=false;bn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4"/><path d="M12 17v.01"/></svg><div>${tripped.map(g=>T(`<b>${g.name}越线</b>（${fmtG(g,g.v)}，停止线 ${fmtG(g,g.stop)}）→ 已自动${g.act}`,`<b>${g.name} tripped</b> (${fmtG(g,g.v)}, stop line ${fmtG(g,g.stop)}) → automatically: ${g.act}`)).join('<br>')}</div>${state.view!=='guardrails'?`<button class="link" data-go="guardrails">${T('查看护栏','View guardrails')}</button>`:''}`;}else bn.hidden=true;
+ const pill=$('#runPill');const paused=state.simShock||state.simComplaint;pill.className='pill '+(paused?'pause':'run');pill.innerHTML='<i></i>'+(paused?T('部分暂停','Partly paused'):T('运行中','Running'));}
+
+function renderLog(){$('#log').innerHTML=state.log.map(l=>`<li><span class="t">${l.t}</span><span class="who ${l.me?'me':''}">${l.me?T('你','You'):T('系统','System')}</span><span>${esc(T(l.zh,l.en))}</span></li>`).join('');}
+
+function renderExp(){const W=640,H=260,L=48,R=16,T_=16,B=32;const ymin=-2,ymax=10;const X=d=>L+(W-L-R)*(d-1)/39,Y=v=>T_+(H-T_-B)*(ymax-v)/(ymax-ymin);
+ const est=[6.1,2.0,5.2,3.1,4.6,2.9,4.4,3.3,4.1,3.5,3.9,3.6,4.0,3.7,3.9,3.7,3.8];const hw=d=>2.6*Math.sqrt(17/d);
+ let g='';for(const v of[-2,0,2,4,6,8,10])g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="${v===0?1.2:0.6}" ${v===0?'':'stroke-dasharray="2 4"'}/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v>0?'+':v<0?'−':''}${Math.abs(v)}</text>`;
+ for(const d of[1,10,17,30,40])g+=`<text x="${X(d)}" y="${H-10}" text-anchor="${d===1?'start':d===40?'end':'middle'}">${T('第 '+d+' 天','Day '+d)}</text>`;
+ const up=[],lo=[];for(let d=1;d<=17;d++){up.push(`${X(d)},${Y(Math.min(ymax,est[d-1]+hw(d)))}`);lo.unshift(`${X(d)},${Y(Math.max(ymin,est[d-1]-hw(d)))}`);}
+ const fu=[],fl=[];for(let d=17;d<=40;d++){fu.push(`${X(d)},${Y(3.8+hw(d))}`);fl.push(`${X(d)},${Y(3.8-hw(d))}`);}
+ const line=est.map((v,i)=>`${X(i+1)},${Y(v)}`).join(' ');
+ $('#expChart').innerHTML=`${g}
+ <line x1="${L}" x2="${W-R}" y1="${Y(BREAK)}" y2="${Y(BREAK)}" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="6 4"/>
+ <text x="${W-R}" y="${Y(BREAK)-6}" text-anchor="end" style="fill:var(--accent)">${T('回本线 +6.4pp','Break-even +6.4pp')}</text>
+ <polygon points="${up.concat(lo).join(' ')}" fill="var(--teal)" opacity=".18"/>
+ <polyline points="${fu.join(' ')}" fill="none" stroke="var(--teal)" stroke-dasharray="3 4" opacity=".7"/>
+ <polyline points="${fl.join(' ')}" fill="none" stroke="var(--teal)" stroke-dasharray="3 4" opacity=".7"/>
+ <polyline points="${line}" fill="none" stroke="var(--teal)" stroke-width="2"/>
+ <circle cx="${X(17)}" cy="${Y(3.8)}" r="4.5" fill="var(--teal)" stroke="var(--surface)" stroke-width="2"/>
+ <text x="${X(17)+10}" y="${Y(3.8)+4}" style="fill:var(--teal);font-weight:600">${T('今天','Today')} +3.8pp [+1.2, +6.4]</text>`;}
+
+function renderSelects(){
+ const keep=(id,html)=>{const s=$(id);const v=s.value;s.innerHTML=html;s.value=v;};
+ keep('#fZone',`<option value="">${T('全部区域','All areas')}</option>`+ZONES.map(z=>`<option>${z}</option>`).join(''));
+ keep('#fType',`<option value="">${T('全部冲击','All shocks')}</option><option value="price">${T('加价','Surge')}</option><option value="late">${T('晚到','Late')}</option><option value="cancel">${T('司机取消','Driver cancelled')}</option>`);
+ keep('#fDec',`<option value="">${T('全部决策','All decisions')}</option>`+Object.keys(DEC).map(k=>`<option value="${k}">${dl(k)}</option>`).join(''));}
+
+function renderAll(){const t=totals();renderKPI(t);renderCurve();renderMix(t);renderQueue();renderGuards(t);renderLog();}
+
+/* ---------- static text swap ---------- */
+function applyLang(){document.documentElement.lang=LANG==='en'?'en':'zh-CN';
+ document.title=T('Lumo 补救决策台','Lumo Remedy Console');
+ document.querySelectorAll('[data-en]').forEach(el=>{if(el.dataset.zh===undefined)el.dataset.zh=el.innerHTML;el.innerHTML=LANG==='en'?el.dataset.en:el.dataset.zh;});
+ document.querySelectorAll('[data-en-ph]').forEach(el=>{if(el.dataset.zhPh===undefined)el.dataset.zhPh=el.placeholder;el.placeholder=LANG==='en'?el.dataset.enPh:el.dataset.zhPh;});
+ document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
+ renderSelects();renderExp();renderAll();if(openId)openDrawer(openId);}
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{LANG=b.dataset.lang;try{localStorage.setItem('remedy-lang',LANG);}catch(e){}applyLang();}));
+
+/* ---------- drawer ---------- */
+let openId=null;
+function openDrawer(id){const r=riders.find(x=>x.id===id);if(!r)return;openId=id;const d=dec(r);const sd=dateOf(r.silent);
+ const p1=r.u!=null?Math.min(0.97,r.p0+r.u/100):null;const ev=r.u!=null?r.u/100*V90-COST:null;const capFare=Math.round(r.fare*1.3);
+ const day=wd(sd);
+ const msgLead=r.type==='late'?T(`${day}那次你等了 ${r.late} 分钟，抱歉。`,`Sorry you waited an extra ${r.late} minutes on ${day}.`):r.type==='price'?T(`${day}那次叫车，报价是平时的 ${r.mult} 倍，抱歉让你为难。`,`Sorry your ${day} ride was quoted at ${r.mult}× the usual fare.`):T(`${day}那次司机取消了你的订单，抱歉。`,`Sorry your driver cancelled on ${day}.`);
+ const msgBody=T(`之后几天你也没再叫车。接下来 7 天你叫车按平时价 1.3 倍封顶（约 RM${capFare}），自动生效，不用领券。`,` We noticed you haven't ridden since. For the next 7 days your fare is capped at 1.3× your usual (about RM${capFare}). It applies automatically, no code needed.`);
+ const thr=r.interval?Math.round(r.interval*1.5*10)/10:null;const o=state.ov[r.id];const locked=!!state.sent;
+ const tl=[
+  {t:md(sd),c:'var(--neg)',h:T('遇到冲击：','Shock: ')+shockText(r),s:r.zone+T(' · 平时车费约 RM',' · usual fare about RM')+r.fare},
+  {t:md(sd),c:'var(--teal)',h:T('当场致歉，讲清原因','Apology and explanation on the spot'),s:T('不花钱，所有受冲击乘客都会收到','Costs nothing; every shocked rider gets it')},
+  {t:thr?md(dateOf(r.silent-Math.ceil(thr))):'—',c:'var(--amber)',h:r.interval?T(`进入沉默期：超过平时间隔 1.5 倍（${thr} 天）还没叫车`,`Went quiet: no ride for 1.5× the usual gap (${thr} days)`):T('新用户：没有平时间隔可比','New rider: no usual gap to compare'),s:T(`至今 ${r.silent} 天未叫车 · `,`${r.silent} days without a ride · `)+freqText(r)},
+  {t:T('今天','Today'),c:DEC[d].col,h:T('系统决策：','Decision: ')+dl(d)+(o?T('（人工改判）',' (manual override)'):''),s:reason(r,d)}];
+ $('#drawer').innerHTML=`
+ <div class="dhead"><div><h3 id="dTitle">${r.id}</h3><p>${r.zone} · ${freqText(r)}</p></div><button class="x" id="closeD" aria-label="${T('关闭','Close')}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+ <div class="dbody">
+  <div class="dsec"><h4>${T('时间线','Timeline')}</h4><ul class="tl">${tl.map(x=>`<li><span class="t">${x.t}</span><span class="m" style="background:${x.c}"></span><span class="d">${esc(x.h)}<small>${esc(x.s)}</small></span></li>`).join('')}</ul></div>
+  <div class="dsec"><h4>${T('模型估算','Model estimate')}</h4>${r.u!=null?`<div class="calc num">
+   <span>${T('不补也会回来的概率','Chance of returning without a remedy')}</span><b>${(r.p0*100).toFixed(0)}%</b>
+   <span>${T('补了会回来的概率','Chance of returning with a remedy')}</span><b>${(p1*100).toFixed(0)}%</b>
+   <span>${T('增量（补了 − 不补）','Uplift (with − without)')}</span><b>${fmtU(r.u)}</b>
+   <span>${T('× 90 天价值 RM31.3','× 90-day value RM31.3')}</span><b>${r.u>=0?'+':'−'}RM${Math.abs(r.u/100*V90).toFixed(2)}</b>
+   <span>${T('− 补救成本','− Remedy cost')}</span><b>−RM2.00</b>
+   <span class="tot">${T('这一单的预期收入减成本','Expected revenue minus cost')}</span><b class="tot" style="color:${ev>=0?'var(--teal)':'var(--neg)'}">${(ev>=0?'+':'−')}RM${Math.abs(ev).toFixed(2)}</b></div>
+   <p class="note" style="margin:8px 0 0">${T('增量 ≥ +6.4pp 才回本；今天的发放线是 ','Uplift must reach +6.4pp to break even; today\'s cutoff is ')}${fmtU(cutU())}${T('。','.')}</p>`:`<div class="calc"><span>${T('新用户没有叫车历史，模型无法打分','New rider with no ride history; the model can\'t score them')}</span><b>—</b></div><p class="note" style="margin:8px 0 0">${T('规则：新用户受冲击后统一发，用来积累数据。','Rule: shocked new riders always get the remedy, which also builds data.')}</p>`}</div>
+  <div class="dsec"><h4>${T('推送预览','Message preview')}</h4><div class="msg"><div class="from"><i></i>${T('Lumo 出行 · 刚刚','Lumo Rides · now')}</div>${msgLead}${msgBody}<br><span class="capchip">${T('封顶价 · 平时价 × 1.3 · 7 天有效','Fare cap · usual × 1.3 · 7 days')}</span></div>
+   <p class="note" style="margin:8px 0 0">${d==='send'||d==='rule'?T('这位乘客今天会收到这条推送。','This rider will receive this message today.'):T('按当前决策，这位乘客不会收到这条推送。','Under the current decision, this rider won\'t receive this message.')}</p></div>
+  <div class="dsec"><h4>${T('人工改判','Override')}</h4>
+   ${locked?`<p class="note" style="margin:0">${T('今日已发放，名单已锁定。','Today\'s send is done and the list is locked.')}</p>`:`<form class="ovr" id="ovrForm" novalidate>
+    <div class="seg" role="radiogroup" aria-label="${T('改判为','Change to')}">
+     <label><input type="radio" name="to" value="keep" ${!o?'checked':''}>${T('按系统决策','Keep system decision')}</label>
+     <label><input type="radio" name="to" value="send" ${o&&o.to==='send'?'checked':''}>${T('改为发放','Send')}</label>
+     <label><input type="radio" name="to" value="no" ${o&&o.to==='no'?'checked':''}>${T('改为不发','Don\'t send')}</label>
+    </div>
+    <textarea id="ovrReason" placeholder="${T('写下改判理由，例如：客服记录显示乘客已投诉两次','Write a reason, e.g. support notes show this rider has complained twice')}" aria-label="${T('改判理由','Override reason')}">${o?esc(o.reason):''}</textarea>
+    <span class="err" id="ovrErr" hidden></span>
+    <div><button class="btn primary" type="submit">${T('保存','Save')}</button></div></form>`}
+  </div>
+ </div>`;
+ $('#drawer').hidden=false;$('#scrim').hidden=false;$('#closeD').focus();}
+function closeDrawer(){$('#drawer').hidden=true;$('#scrim').hidden=true;const row=openId&&document.querySelector(`tr[data-id="${openId}"]`);openId=null;if(row)row.focus();}
+
+/* ---------- events ---------- */
+function go(v){if(!['today','experiment','guardrails','log'].includes(v))v='today';state.view=v;
+ document.querySelectorAll('.view').forEach(s=>s.hidden=s.id!=='view-'+v);
+ document.querySelectorAll('.nav').forEach(b=>{if(b.dataset.view===v)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+ renderGuards(totals());}
+document.querySelectorAll('.nav').forEach(b=>b.addEventListener('click',()=>{location.hash=b.dataset.view;}));
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)location.hash=g.dataset.go;});
+
+const pct=$('#pct');
+const logPct=()=>log(true,`把发放比例调到前 ${state.pct}%（发放线 ${fmtU(cutU())}）`,`Set the send ratio to the top ${state.pct}% (cutoff ${fmtU(cutU())})`);
+pct.addEventListener('input',()=>{state.pct=+pct.value;state.confirming=false;renderAll();});
+pct.addEventListener('change',()=>{logPct();renderLog();});
+document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{if(state.sent)return;const k=b.dataset.preset;state.pct=k==='max'?maxP:+k;pct.value=state.pct;state.confirming=false;logPct();renderAll();}));
+
+$('#q').addEventListener('input',e=>{state.filter.q=e.target.value.trim();state.page=0;renderQueue();});
+$('#fZone').addEventListener('change',e=>{state.filter.zone=e.target.value;state.page=0;renderQueue();});
+$('#fType').addEventListener('change',e=>{state.filter.type=e.target.value;state.page=0;renderQueue();});
+$('#fDec').addEventListener('change',e=>{state.filter.dec=e.target.value;state.page=0;renderQueue();});
+document.querySelectorAll('th button[data-sort]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.sort;if(state.sort.k===k)state.sort.dir*=-1;else state.sort={k,dir:-1};state.page=0;renderQueue();}));
+$('#prev').addEventListener('click',()=>{state.page--;renderQueue();});
+$('#next').addEventListener('click',()=>{state.page++;renderQueue();});
+$('#rows').addEventListener('click',e=>{const tr=e.target.closest('tr[data-id]');if(tr)openDrawer(tr.dataset.id);});
+$('#rows').addEventListener('keydown',e=>{if(e.key==='Enter'){const tr=e.target.closest('tr[data-id]');if(tr)openDrawer(tr.dataset.id);}});
+$('#scrim').addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#drawer').hidden)closeDrawer();});
+$('#drawer').addEventListener('click',e=>{if(e.target.closest('#closeD'))closeDrawer();});
+$('#drawer').addEventListener('input',e=>{if(e.target.id==='ovrReason'){$('#ovrErr').hidden=true;}});
+$('#drawer').addEventListener('submit',e=>{e.preventDefault();const f=e.target;const to=f.querySelector('input[name=to]:checked').value;const reasonTxt=$('#ovrReason').value.trim();const err=$('#ovrErr');
+ if(to!=='keep'&&reasonTxt.length<4){err.textContent=T('改判需要写理由（至少 4 个字），方便之后复盘。','Add a reason (at least 4 characters) so the change can be reviewed later.');err.hidden=false;$('#ovrReason').focus();return;}
+ const r=riders.find(x=>x.id===openId);const b=dec(r);
+ if(to==='keep'){if(state.ov[r.id]){delete state.ov[r.id];const a=dec(r);log(true,`撤销 ${r.id} 的人工改判，恢复系统决策「${DEC[a].zh}」`,`Removed the override on ${r.id}; back to the system decision "${DEC[a].en}"`);}}
+ else{state.ov[r.id]={to,reason:reasonTxt};const a=dec(r);log(true,`把 ${r.id} 从「${DEC[b].zh}」改为「${DEC[a].zh}」：${reasonTxt}`,`Changed ${r.id} from "${DEC[b].en}" to "${DEC[a].en}": ${reasonTxt}`);}
+ state.confirming=false;renderAll();openDrawer(r.id);});
+$('#confirm').addEventListener('click',e=>{
+ if(e.target.id==='askSend'){state.confirming=true;renderMix(totals());$('#doSend').focus();}
+ else if(e.target.id==='cancelSend'){state.confirming=false;renderMix(totals());}
+ else if(e.target.id==='doSend'){const t=totals();state.sent={n:t.c.send+t.c.rule,spend:t.spend,t:clock()};state.confirming=false;
+  log(true,`确认今日发放：${state.sent.n} 人（模型 ${t.c.send} + 新用户 ${t.c.rule}），花费 ${RM(t.spend)}`,`Confirmed today's send: ${state.sent.n} riders (${t.c.send} by model + ${t.c.rule} new), spend ${RM(t.spend)}`);
+  log(false,'已排队推送，24 小时内送达；对照组 10% 已留出','Messages queued for delivery within 24 hours; 10% control group held out');renderAll();}});
+$('#simShock').addEventListener('change',e=>{state.simShock=e.target.checked;state.confirming=false;
+ if(state.simShock)log(false,'冲击率 8.4% 越过停止线 6% → 自动暂停封顶价，只保留当场致歉；已通知 CRM 团队','Shock rate 8.4% crossed the 6% stop line → capped fares paused, apology only; CRM team notified');
+ else log(false,'冲击率回落到 3.1%，封顶价恢复（演练）','Shock rate back to 3.1%; capped fares resumed (drill)');renderAll();});
+$('#simComplaint').addEventListener('change',e=>{state.simComplaint=e.target.checked;state.confirming=false;
+ if(state.simComplaint)log(false,'投诉率 1.4% 越过停止线 1% → 暂停全部补救推送，等文案复核；已通知运营与客服','Complaint rate 1.4% crossed the 1% stop line → all remedy messages paused for copy review; ops & support notified');
+ else log(false,'投诉率回落到 0.6%，补救推送恢复（演练）','Complaint rate back to 0.6%; remedy messages resumed (drill)');renderAll();});
+
+applyLang();go(location.hash.slice(1)||'today');
+})();
+</script>
+</body>
+</html>
